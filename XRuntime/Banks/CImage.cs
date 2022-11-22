@@ -5,8 +5,10 @@
 //----------------------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using CTFAK.Memory;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -19,7 +21,7 @@ namespace RuntimeXNA.Banks
     public class CImage
     {
         public CRunApp app;
-        public short handle;
+        public int handle;
         public short width;
         public short height;
         public short xSpot;
@@ -33,38 +35,33 @@ namespace RuntimeXNA.Banks
 	    public const int maxRotatedMasks=10;
 		public CArrayList maskRotation=null;
     	public short mosaic=0;
-        public Rectangle mosaicRectangle;
 
         public void loadHandle(CFile file)
         {
-            handle = file.readAShort();
+            handle = file.readAInt();
             file.skipBytes(12);
         }
 
-        public void load(CRunApp a)
+        public void load(CRunApp a,CFile file,bool doMosaic)
         {
             app = a;
-            handle = app.file.readAShort();
-            width = app.file.readAShort();
-            height = app.file.readAShort();
-            xSpot = app.file.readAShort();
-            ySpot = app.file.readAShort();
-            xAP = app.file.readAShort();
-            yAP = app.file.readAShort();
+            handle = (short)(app.file.readAInt()-1);
+            
+
+            var imgData = Decompressor.Decompress(file, out _);
+            var imgFile = new CFile(imgData);
+
+            var checksum = imgFile.readAInt();
+            var references = imgFile.readAInt();
+            var size = imgFile.readAInt();
+            width = imgFile.readShort();
+            height = imgFile.readShort();
+            imgFile.readShort();
+
+
             mosaic = 0;
-            if (app.frame.mosaicHandles != null)
-            {
-                if (app.frame.mosaicHandles[handle] != 0)
-                {
-                    mosaic = app.frame.mosaicHandles[handle];
-                    app.imageBank.loadMosaic(mosaic);
-                    mosaicRectangle.X=app.frame.mosaicX[handle];
-                    mosaicRectangle.Y=app.frame.mosaicY[handle];
-                    mosaicRectangle.Width = width;
-                    mosaicRectangle.Height = height;
-                    return;
-                }
-            }
+           
+            
 
             string imgName = handle.ToString("D4");
             imgName = "Img" + imgName;

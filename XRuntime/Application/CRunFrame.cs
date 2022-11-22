@@ -103,6 +103,7 @@ namespace RuntimeXNA.Application
         public int[] mosaicX= null;
         public int[] mosaicY= null;
         public int mosaicMaxHandle=0;
+        public CFile frFile;
 
         public CRunFrame()
         {
@@ -117,7 +118,7 @@ namespace RuntimeXNA.Application
         public bool loadFullFrame(int index)
         {
             // Positionne le fichier
-            app.file.seek(app.frameOffsets[index]);
+            frFile = app.frameFiles[index];
 
             // Charge la frame
             evtProg = new CEventProgram();
@@ -132,47 +133,21 @@ namespace RuntimeXNA.Application
             int n;
             while (chk.chID != 0x7F7F)	// CHUNK_LAST
             {
-                chk.readHeader(app.file);
+                chk.readHeader(frFile);
                 if (chk.chSize == 0)
                 {
                     continue;
                 }
-                posEnd = app.file.getFilePointer() + chk.chSize;
+                posEnd = frFile.getFilePointer() + chk.chSize;
+                var frChunkData = chk.getFile();
                 switch (chk.chID)
                 {
                     // CHUNK_FRAMEHEADER
                     case 0x3334:
-                        loadHeader();
-/*
-                        if ((leFlags & LEF_RESIZEATSTART) != 0)
-                        {
-                            nOldFrameWidth = leWidth;
-                            nOldFrameHeight = leHeight;
-
-                            screen = Toolkit.getDefaultToolkit().getScreenSize();
-                            leWidth = screen.width;
-                            leHeight = screen.height;
-
-                            // To keep compatibility with previous versions without virtual rectangle (nécessaire ?)
-                            leVirtualRect.left = leVirtualRect.top = 0;
-                            leVirtualRect.right = leWidth;
-                            leVirtualRect.bottom = leHeight;
-                        }
-*/
-                        // B243
-/*                        if (app.parentApp != null && (app.parentOptions & CCCA.CCAF_DOCKED) != 0)
-                        {
-                            leEditWinWidth = app.cx;
-                            leEditWinHeight = app.cy;
-                        }
-                        else if ((leFlags & LEF_RESIZEATSTART) != 0)
-                        {
-                            screen = Toolkit.getDefaultToolkit().getScreenSize();
-                            leEditWinWidth = screen.width;
-                            leEditWinHeight = screen.height;
-                        }
-                        else
- */ 
+                        leWidth = frChunkData.readAInt();
+                        leHeight = frChunkData.readAInt();
+                        leBackground = frChunkData.readAColor();
+                        leFlags = frChunkData.readAInt();
                         {
                             leEditWinWidth = Math.Min(app.gaCxWin, leWidth);
                             leEditWinHeight = Math.Min(app.gaCyWin, leHeight);
@@ -181,7 +156,7 @@ namespace RuntimeXNA.Application
 
                     // CHUNK_FRAMEVIRTUALRECT
                     case 0x3342:
-                        leVirtualRect.load(app.file);
+                        leVirtualRect.load(frChunkData);
                         if ((leFlags & LEF_RESIZEATSTART) != 0)
                         {
                             if (leVirtualRect.right - leVirtualRect.left == nOldFrameWidth || leVirtualRect.right - leVirtualRect.left < leWidth)
@@ -197,17 +172,17 @@ namespace RuntimeXNA.Application
 
                     // CHUNK_RANDOMSEED
                     case 0x3344:
-                        m_wRandomSeed = app.file.readAShort();
+                        m_wRandomSeed = frChunkData.readAShort();
                         break;
 
                     // CHUNK_MVTTIMERBASE
                     case 0x3347:
-                        m_dwMvtTimerBase = app.file.readAInt();
+                        m_dwMvtTimerBase = frChunkData.readAInt();
                         break;
 
                     // CHUNK_FRAMENAME
                     case 0x3335:
-                        frameName = app.file.readAString();
+                        frameName = frChunkData.readAString();
                         break;
 
                     // CHUNK_FRAMEPALETTE
@@ -216,12 +191,20 @@ namespace RuntimeXNA.Application
 
                     // CHUNK_FRAMELAYERS
                     case 0x3341:
-                        loadLayers();
+                        nLayers = frChunkData.readAInt();
+                        layers = new CLayer[nLayers];
+
+                        int layerN;
+                        for (layerN = 0; layerN < nLayers; layerN++)
+                        {
+                            layers[layerN] = new CLayer();
+                            layers[layerN].load(frChunkData);
+                        }
                         break;
 
                     // CHUNK_FRAMEITEMINSTANCES
                     case 0x3338:
-                        LOList.load(app);
+                        LOList.load(app, frChunkData);
                         break;
 
                     // CHUNK_ADDITIONAL_FRAMEITEMINSTANCE
@@ -230,8 +213,8 @@ namespace RuntimeXNA.Application
 
                     // CHUNK_IPHONE_OPTIONS
                     case 0x334A:
-                        joystick=app.file.readAShort();
-                        iPhoneOptions = app.file.readAShort();
+                        joystick=frChunkData.readAShort();
+                        iPhoneOptions = frChunkData.readAShort();
                         break;
 
                     // CHUNK_FRAMEFADEIN
@@ -248,7 +231,7 @@ namespace RuntimeXNA.Application
 
                     // CHUNK_FRAMEEVENTS
                     case 0x333D:
-                        evtProg.load(app);
+                        evtProg.load(app,frChunkData);
                         maxObjects = evtProg.maxObjects;
 //                        evtProg.relocatePath(app);
                         break;
@@ -260,19 +243,19 @@ namespace RuntimeXNA.Application
                         mosaicX = new int[number];
                         mosaicY = new int[number];
                         mosaicMaxHandle = 0;
-                        for (n = 0; n < number; n++)
+                        for (layerN = 0; layerN < number; layerN++)
                         {
-                            mosaicHandles[n] = app.file.readAShort();
-                            mosaicMaxHandle = Math.Max(mosaicMaxHandle, mosaicHandles[n]);
-                            mosaicX[n] = app.file.readAShort();
-                            mosaicY[n] = app.file.readAShort();
+                            mosaicHandles[layerN] = frChunkData.readAShort();
+                            mosaicMaxHandle = Math.Max(mosaicMaxHandle, mosaicHandles[layerN]);
+                            mosaicX[layerN] = frChunkData.readAShort();
+                            mosaicY[layerN] = frChunkData.readAShort();
                         }
                         mosaicMaxHandle++;
                         break;
 
                 }
                 // Positionne a la fin du chunk
-                app.file.seek(posEnd);
+                //frFile.seek(posEnd);
             }
 
             // Marque les OI a charger
@@ -286,9 +269,12 @@ namespace RuntimeXNA.Application
             // Charge les OI et les elements des banques
             app.imageBank.resetToLoad();
             app.fontBank.resetToLoad();
-            app.OIList.load(app.file, app);
+            app.OIList.load(app.objectInfoListFile, app);
             app.OIList.enumElements((IEnum) app.imageBank, (IEnum)app.fontBank);
+            var pos = app.file.getFilePointer();
+            app.file.seek(app.imageBank.realFileOffset);
             app.imageBank.load();
+            app.file.seek(pos);
             app.fontBank.load();
             evtProg.enumSounds((IEnum) app.soundBank);
             app.soundBank.load();
@@ -306,26 +292,9 @@ namespace RuntimeXNA.Application
             return true;
         }
 
-        public void loadLayers()
-        {
-            nLayers = app.file.readAInt();
-            layers = new CLayer[nLayers];
+        
 
-            int n;
-            for (n = 0; n < nLayers; n++)
-            {
-                layers[n] = new CLayer();
-                layers[n].load(app.file);
-            }
-        }
-
-        public void loadHeader()
-        {
-            leWidth = app.file.readAInt();
-            leHeight = app.file.readAInt();
-            leBackground = app.file.readAColor();
-            leFlags = app.file.readAInt();
-        }
+        
 
         // Get obstacle mask bits
         public int getMaskBits()

@@ -5,9 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FusionXExporter"
         mc:Ignorable="d"
-        Title="FusionX exporter" Height="300" Width="640">
+        Title="FusionX exporter" Height="300" Width="640" Background="#202025">
     <Grid>
-        
+    <StackPanel>
+        <TextBlock Text="FusionX" HorizontalAlignment="Center" FontSize="75" FontFamily="Courier New" Foreground="White"></TextBlock>
+        <TextBlock Name="OutputText" HorizontalAlignment="Left" FontSize="18" FontFamily="Courier New" Foreground="White"></TextBlock>
+        <Button Name="BuildBtn" Click="BuildBtn_OnClick" Background="#252530"><TextBlock Text="Build" FontSize="75" FontFamily="Courier New" Foreground="White"></TextBlock></Button>
+    </StackPanel>        
 
     </Grid>
 </Window>

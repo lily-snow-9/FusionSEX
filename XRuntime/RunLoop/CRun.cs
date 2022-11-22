@@ -2968,6 +2968,7 @@ namespace RuntimeXNA.RunLoop
 		        background = rhApp.gaBorderColour;
 
             Color c = CServices.getColor(background);
+
             if (rhApp.parentApp == null)
             {
                 rhApp.graphicsDevice.Clear(c);
@@ -2979,6 +2980,7 @@ namespace RuntimeXNA.RunLoop
                     return;
                 }
                 rhApp.services.drawFilledRectangleSub(rhApp.spriteBatch, rhApp.xOffset, rhApp.yOffset, rhApp.parentWidth, rhApp.parentHeight, c, CSpriteGen.BOP_COPY, 0);
+                
             }
 
             if (rh3Scrolling!=0)
@@ -3048,6 +3050,7 @@ namespace RuntimeXNA.RunLoop
                     control.drawControl(rhApp.spriteBatch);
                 }
             }
+
 #if WINDOWS_PHONE
             if (joystick != null)
             {

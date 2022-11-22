@@ -124,7 +124,7 @@ namespace RuntimeXNA.Actions
                 else
                 {
                     texture = rhPtr.rhApp.imageBank.mosaics[sourceImg.mosaic];
-                    texture.GetData(0, sourceImg.mosaicRectangle, pixels, 0, width*height);
+                    texture.GetData(0, new Rectangle(0, 0, sourceImg.width, sourceImg.height), pixels, 0, width*height);
                     CServices.replaceColor(rhPtr.rhApp, pixels, width, height, oldColor, newColor);
                     Texture2D texture2 = new Texture2D(rhPtr.rhApp.spriteBatch.GraphicsDevice, width, height);
                     texture2.SetData(pixels);

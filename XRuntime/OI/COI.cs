@@ -65,6 +65,7 @@ namespace RuntimeXNA.OI
         public int oiLoadFlags = 0;
         public short oiLoadCount = 0;
         public short oiCount = 0;
+        public CFile objectCommonFile;
     
         public void loadHeader(CFile file)
         {

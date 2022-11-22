@@ -27,41 +27,47 @@ namespace RuntimeXNA.OI
         {
             // Alloue la table de OI
             oiMaxIndex = (short)file.readAInt();
-            ois = new COI[oiMaxIndex];
+            Console.WriteLine("Reading objects: "+oiMaxIndex);
 
+            ois = new COI[oiMaxIndex];
+            CChunk chk = new CChunk();
             // Explore les chunks
             int index;
             oiMaxHandle = 0;
             for (index = 0; index < oiMaxIndex; index++)
             {
-                CChunk chk = new CChunk();
                 int posEnd;
                 while (chk.chID != CChunk.CHUNK_LAST)
                 {
+                    
                     chk.readHeader(file);
+                    posEnd = file.getFilePointer() + chk.chSize;
+                    var objFile = chk.getFile();
                     if (chk.chSize == 0)
                         continue;
-                    posEnd = file.getFilePointer() + chk.chSize;
+                    
                     switch (chk.chID)
                     {
                         // CHUNK_OBJINFOHEADER
                         case 0x4444:
                             ois[index] = new COI();
-                            ois[index].loadHeader(file);
+                            ois[index].loadHeader(objFile);
                             if (ois[index].oiHandle >= oiMaxHandle)
                                 oiMaxHandle = (short)(ois[index].oiHandle + 1);
                             break;
                         // CHUNK_OBJINFONAME
                         case 0x4445:
-                            ois[index].oiName = file.readAString();
+                            ois[index].oiName = objFile.readAString();
+                            Console.WriteLine(ois[index].oiName);
                             break;
                         // CHUNK_OBJECTSCOMMON
                         case 0x4446:
-                            ois[index].oiFileOffset = (int)file.getFilePointer();
+                            objFile.pointer = 0;
+                            ois[index].objectCommonFile = objFile;
                             break;
                     }
                     // Positionne a la fin du chunk
-                    file.seek(posEnd);
+                    //file.seek(posEnd);
                 }
             }
             // Table OI To Handle
@@ -158,7 +164,7 @@ namespace RuntimeXNA.OI
 	            {
 		            if (oiLoaded[h]==0 || (oiLoaded[h]!=0 && (ois[oiHandleToIndex[h]].oiLoadFlags&COI.OILF_TORELOAD)!=0) )
 		            {
-		                ois[oiHandleToIndex[h]].load(file, app);
+		                ois[oiHandleToIndex[h]].load(ois[oiHandleToIndex[h]].objectCommonFile, app);
 		                oiLoaded[h]=1;
 		            }
 	            }

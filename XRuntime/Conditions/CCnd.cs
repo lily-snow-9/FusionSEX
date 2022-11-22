@@ -27,13 +27,13 @@ namespace RuntimeXNA.Conditions
 		{
 		}
 		
-		public static CCnd create(CRunApp app)
+		public static CCnd create(CRunApp app,CFile file)
 		{
-			int debut = app.file.getFilePointer();
+			int debut = file.getFilePointer();
 			
-			short size = app.file.readAShort(); // evtSize
+			short size = file.readAShort(); // evtSize
 			CCnd cnd = null;
-			int c = app.file.readAInt();
+			int c = file.readAInt();
 
 			switch (c)
 			{
@@ -552,14 +552,14 @@ namespace RuntimeXNA.Conditions
  			if (cnd != null)
 			{
 				cnd.evtCode = c;
-				cnd.evtOi = app.file.readAShort();
-				cnd.evtOiList = app.file.readAShort();
-				cnd.evtFlags = (byte) app.file.readByte();
-				cnd.evtFlags2 = (byte) app.file.readByte();
-				cnd.evtNParams = (byte) app.file.readByte();
-				cnd.evtDefType = (byte) app.file.readByte();
-				cnd.evtIdentifier = app.file.readAShort();
-				
+				cnd.evtOi = file.readAShort();
+				cnd.evtOiList = file.readAShort();
+				cnd.evtFlags = (byte) file.readByte();
+				cnd.evtFlags2 = (byte) file.readByte();
+				cnd.evtNParams = (byte) file.readByte();
+				cnd.evtDefType = (byte) file.readByte();
+				cnd.evtIdentifier = file.readAShort();
+				Console.WriteLine($"Number of params: {cnd.evtNParams}");
 				// Lis les parametres
 				if (cnd.evtNParams > 0)
 				{
@@ -567,7 +567,7 @@ namespace RuntimeXNA.Conditions
 					int n;
 					for (n = 0; n < cnd.evtNParams; n++)
 					{
-						cnd.evtParams[n] = CParam.create(app);
+						cnd.evtParams[n] = CParam.create(app,file);
 					}
 				}
 			}
@@ -577,7 +577,7 @@ namespace RuntimeXNA.Conditions
 			}
 			
 			// Positionne a la fin de la condition
-			app.file.seek((int)(debut + size));
+			file.seek((int)(debut + size));
 			
 			return cnd;
 		}

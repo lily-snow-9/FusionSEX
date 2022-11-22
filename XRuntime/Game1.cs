@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.IO;
+using CTFAK.Utils;
 using RuntimeXNA.Services;
 using RuntimeXNA.Sprites;
 using RuntimeXNA.Application;
@@ -98,7 +99,9 @@ namespace RuntimeXNA
             spriteBatch = new SpriteBatchEffect(Content, GraphicsDevice);
             IsMouseVisible = true;
             //BinaryRead.Data cca = Content.Load<BinaryRead.Data>("Application");
-            CFile cfile = new CFile(File.ReadAllBytes("Application.ccx"));//cca.data);
+            String libraryFile = "x64\\CTFAK-Native.dll";
+            NativeLib.LoadLibrary(libraryFile);
+            CFile cfile = new CFile(File.ReadAllBytes("Application.ccn"));//cca.data);
             application = new CRunApp(this, cfile);
             if (application.load())
             {

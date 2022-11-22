@@ -24,13 +24,13 @@ namespace RuntimeXNA.Actions
 		{
 		}
 		
-		public static CAct create(CRunApp app)
+		public static CAct create(CRunApp app,CFile file)
 		{
-			int debut = app.file.getFilePointer();
+			int debut = file.getFilePointer();
 			
-			short size = app.file.readAShort(); // evtSize
+			short size = file.readAShort(); // evtSize
 			CAct act = null;
-			int c = app.file.readAInt();
+			int c = file.readAInt();
 
             switch (c)
 			{
@@ -773,12 +773,12 @@ namespace RuntimeXNA.Actions
 			if (act != null)
 			{
 				act.evtCode = c;
-				act.evtOi = app.file.readAShort();
-				act.evtOiList = app.file.readAShort();
-				act.evtFlags = (byte) app.file.readByte();
-				act.evtFlags2 = (byte) app.file.readByte();
-				act.evtNParams = (byte) app.file.readByte();
-				act.evtDefType = (byte) app.file.readByte();
+				act.evtOi = file.readAShort();
+				act.evtOiList = file.readAShort();
+				act.evtFlags = (byte) file.readByte();
+				act.evtFlags2 = (byte) file.readByte();
+				act.evtNParams = (byte) file.readByte();
+				act.evtDefType = (byte) file.readByte();
 				
 				// Lis les parametres
 				if (act.evtNParams > 0)
@@ -787,7 +787,7 @@ namespace RuntimeXNA.Actions
 					int n;
 					for (n = 0; n < act.evtNParams; n++)
 					{
-						act.evtParams[n] = CParam.create(app);
+						act.evtParams[n] = CParam.create(app,file);
 					}
 				}
 			}
@@ -797,7 +797,7 @@ namespace RuntimeXNA.Actions
 			}
 			
 			// Positionne a la fin de la condition
-			app.file.seek((int)(debut + size));
+			file.seek((int)(debut + size));
 			
 			return act;
 		}

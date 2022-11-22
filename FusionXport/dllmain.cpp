@@ -19,7 +19,7 @@
 #include <string>
 #include <windows.h>
 #include "MMF2BuilderDll.h"
-#define BUILDER_ID 0x30000000
+#define BUILDER_ID 0x40000000
 
 LPCWSTR BUILD_NAMES[] = {
     L"FusionX"

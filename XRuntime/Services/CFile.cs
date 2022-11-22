@@ -12,9 +12,9 @@ namespace RuntimeXNA.Services
 {
     public class CFile
     {
-        private byte[] data;
+        public byte[] data;
         public int pointer = 0;
-        public bool bUnicode=false;
+        public bool bUnicode=true;
 
         public CFile()
         {

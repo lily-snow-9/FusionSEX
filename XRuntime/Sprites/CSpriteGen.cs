@@ -1253,7 +1253,7 @@ namespace RuntimeXNA.Sprites
                 if (ptei.mosaic != 0)
                 {
                     texture = app.imageBank.mosaics[ptei.mosaic];
-                    sourceRect = ptei.mosaicRectangle;
+                    sourceRect = new Rectangle(0, 0, ptei.width, ptei.height);
                 }
                 batch.Draw(texture, tempRect, sourceRect, color, effect & BOP_MASK, effectParam);
 
@@ -1321,7 +1321,7 @@ namespace RuntimeXNA.Sprites
                         if (ptei.mosaic != 0)
                         {
                             texture = app.imageBank.mosaics[ptei.mosaic];
-                            sourceRect = ptei.mosaicRectangle;
+                            sourceRect = new Rectangle(0, 0, ptei.width, ptei.height);
                         }
                         batch.Draw(texture, tempRect, sourceRect, ptSpr.rgb, (float)((-ptSpr.sprAngle*Math.PI)/180), vector, ptSpr.sprEffect);
                     }

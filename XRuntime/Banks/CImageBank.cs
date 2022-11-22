@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using System.Text;
+using CTFAK.Memory;
 using RuntimeXNA.Application;
 using RuntimeXNA.Services;
 
@@ -21,14 +22,15 @@ namespace RuntimeXNA.Banks
         public int nHandlesReel;
         public int nHandlesTotal;
         public int nImages;
-        int[] offsetsToImage;
+        Dictionary<int,int> offsetsToImage;
         short[] handleToIndex;
         byte[] useCount;
         CRect rcInfo=null;
         CPoint hsInfo=null;
         CPoint apInfo=null;
         public Texture2D[] mosaics=null;
-        public Texture2D[] oldMosaics=null;	
+        public Texture2D[] oldMosaics=null;
+        public int realFileOffset;
 
         public CImageBank()
         {
@@ -43,19 +45,20 @@ namespace RuntimeXNA.Banks
         public void preLoad()
         {
             // Nombre de handles
-            nHandlesReel = file.readAShort();
-            offsetsToImage = new int[nHandlesReel];
+            nHandlesReel = file.readAInt()-1;
+            offsetsToImage = new Dictionary<int, int>();
 
+            var shit = file.readAInt();
+            Decompressor.Decompress(file, out _);
             // Repere les positions des images
-            int nImg = file.readAShort();
             int n;
             int offset;
             CImage image = new CImage();
-            for (n = 0; n < nImg; n++)
+            for (n = 0; n < nHandlesReel; n++)
             {
                 offset = (int) file.getFilePointer();
-                image.loadHandle(app.file);
-                offsetsToImage[image.handle] = offset;
+                image.load(app,app.file,false);
+                offsetsToImage.Add(image.handle,offset);
             }
 
             // Reservation des tables
@@ -180,7 +183,7 @@ namespace RuntimeXNA.Banks
                     {
                         newImages[count] = new CImage();
                         file.seek(offsetsToImage[h]);
-                        newImages[count].load(app);
+                        newImages[count].load(app,app.file,true);
                         newImages[count].useCount = useCount[h];
                     }
                     count++;
@@ -559,7 +562,7 @@ namespace RuntimeXNA.Banks
                             images[iFound] = new CImage();
                             images[iFound].useCount = 1;
                             file.seek(offsetsToImage[handles[h]]);
-                            images[iFound].load(app);
+                            images[iFound].load(app,app.file,true);
                         }
                     }
                 }

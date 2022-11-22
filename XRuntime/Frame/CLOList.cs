@@ -20,16 +20,16 @@ namespace RuntimeXNA.Frame
         public int nIndex;
         int loFranIndex;
 
-        public void load(CRunApp app)
+        public void load(CRunApp app,CFile file)
         {
-            nIndex = app.file.readAInt();
+            nIndex = file.readAInt();
             list = new CLO[nIndex];
             int n;
             short maxHandles = 0;
             for (n = 0; n < nIndex; n++)
             {
                 list[n] = new CLO();
-                list[n].load(app.file);
+                list[n].load(file);
                 if (list[n].loHandle + 1 > maxHandles)
                 {
                     maxHandles = (short) (list[n].loHandle + 1);

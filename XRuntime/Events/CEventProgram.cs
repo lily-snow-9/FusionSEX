@@ -2806,7 +2806,7 @@ namespace RuntimeXNA.Events
 		// --------------------------------------------------------------------------
 		// CHARGEMENT DES EVENEMENTS
 		// --------------------------------------------------------------------------
-		public virtual void  load(CRunApp app)
+		public virtual void  load(CRunApp app,CFile file)
 		{
 			byte[] code = new byte[4];
 			int number;
@@ -2814,52 +2814,64 @@ namespace RuntimeXNA.Events
 			int eventPos = 0;
 			while (true)
 			{
-				app.file.read(code);
+				if (file.isEOF()) break;
+				file.read(code);
 				
 				// EVTFILECHUNK_HEAD
 				if (code[0] == 'E' && code[1] == 'R' && code[2] == '>' && code[3] == '>')
 				{
-					maxObjects = app.file.readAShort();
+					maxObjects = file.readAShort();
 					if (maxObjects < 300)
 					{
 						maxObjects = 300;
 					}   
-					maxOi = app.file.readAShort();
-					nPlayers = app.file.readAShort();
+					maxOi = file.readAShort();
+					nPlayers = file.readAShort();
 					for (n = 0; n < 7 + COI.OBJ_LAST; n++)
 					{
-						nConditions[n] = app.file.readAShort();
+						nConditions[n] = file.readAShort();
 					}
-					nQualifiers = app.file.readAShort();
+					nQualifiers = file.readAShort();
 					if (nQualifiers > 0)
 					{
 						qualifiers = new CLoadQualifiers[nQualifiers];
 						for (n = 0; n < nQualifiers; n++)
 						{
 							qualifiers[n] = new CLoadQualifiers();
-							qualifiers[n].qOi = app.file.readAShort();
-							qualifiers[n].qType = app.file.readAShort();
+							qualifiers[n].qOi = file.readAShort();
+							qualifiers[n].qType = file.readAShort();
 						}
 					}
 				}
 				// EVTFILECHUNK_EVTHEAD
 				else if (code[0] == 'E' && code[1] == 'R' && code[2] == 'e' && code[3] == 's')
 				{
-					app.file.readAInt();
-					nEvents = app.file.readAInt();
-					events = new CEventGroup[nEvents];
+					//file.readAInt();//android shit
+					nEvents = file.readAInt();
 					eventPos = 0;
 				}
 				// EVTFILECHUNK_EVENTS
 				else if (code[0] == 'E' && code[1] == 'R' && code[2] == 'e' && code[3] == 'v')
 				{
-					app.file.readAInt();
-					number = app.file.readAInt();
-					for (n = 0; n < number; n++)
+					//file.readAInt();
+					number = file.readAInt();
+					List<CEventGroup> tempEvents = new List<CEventGroup>();
+					while(true)
 					{
-						events[eventPos] = CEventGroup.create(app);
+						tempEvents.Add(CEventGroup.create(app,file));
 						eventPos++;
+						if (file.pointer >= number) break;//workaround
 					}
+
+					events = tempEvents.ToArray();
+
+					nEvents = events.Length;
+
+				}
+				else if (code[0] == 'E' && code[1] == 'R' && code[2] == 'o' && code[3] == 'p')
+				{
+					//no fucking idea
+					file.readAInt();//why not
 				}
 				// EVTFILECHUNK_END
 				else if (code[0] == '<' && code[1] == '<' && code[2] == 'E' && code[3] == 'R')

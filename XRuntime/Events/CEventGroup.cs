@@ -11,6 +11,7 @@ using RuntimeXNA.Params;
 using RuntimeXNA.Application;
 using RuntimeXNA.Actions;
 using RuntimeXNA.Conditions;
+using RuntimeXNA.Services;
 
 namespace RuntimeXNA.Events
 {	
@@ -49,36 +50,40 @@ namespace RuntimeXNA.Events
 		public CEventGroup()
 		{
 		}
-		public static CEventGroup create(CRunApp app)
+		public static CEventGroup create(CRunApp app,CFile file)
 		{
-			int debut = app.file.getFilePointer();
+			int debut = file.getFilePointer();
 			
-			short size = app.file.readAShort(); // evgSize
+			short size = file.readAShort(); // evgSize
 			CEventGroup evg = new CEventGroup();
 			
-			evg.evgNCond = (byte) app.file.readByte();
-			evg.evgNAct = (byte) app.file.readByte();
-			evg.evgFlags = (ushort)app.file.readAShort();
-			evg.evgInhibit = (ushort)app.file.readAShort();
-			evg.evgInhibitCpt = (short)app.file.readAShort();
-			evg.evgIdentifier = (ushort)app.file.readAShort();
-			app.file.skipBytes(2); // evgUndo
+			evg.evgNCond = (byte) file.readByte();
+			evg.evgNAct = (byte) file.readByte();
+			Console.WriteLine($"Conditions: {evg.evgNCond}. Actions: {evg.evgNAct}");
+			evg.evgFlags = (ushort)file.readAShort();
+			file.readAShort();
+			evg.evgInhibit = (ushort)file.readAInt();
+			evg.evgInhibitCpt = (short)file.readAInt();
+			//evg.evgInhibit = (ushort)file.readAShort();
+			//evg.evgInhibitCpt = (short)file.readAShort();
+			//evg.evgIdentifier = (ushort)file.readAShort();
+			//file.skipBytes(2); // evgUndo
 			
 			evg.evgEvents = new CEvent[evg.evgNCond + evg.evgNAct];
 			int n;
 			int count = 0;
 			for (n = 0; n < evg.evgNCond; n++)
 			{
-				evg.evgEvents[count++] = CCnd.create(app);
+				evg.evgEvents[count++] = CCnd.create(app,file);
 			}
 			
 			for (n = 0; n < evg.evgNAct; n++)
 			{
-				evg.evgEvents[count++] = CAct.create(app);
+				evg.evgEvents[count++] = CAct.create(app,file);
 			}
 			
 			// Positionne en fin de groupe
-			app.file.seek(debut - size);
+			file.seek(debut - size);
 			
 			return evg;
 		}

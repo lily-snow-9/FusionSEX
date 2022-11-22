@@ -84,7 +84,7 @@ namespace RuntimeXNA.OI
         public override void load(CFile file, short type)
         {
 	        // Position de debut
-	        int debut=file.getFilePointer();
+	        int debut = file.getFilePointer();
 	        ocQualifiers=new short[8];		    // OC_MAX_QUALIFIERS 
         	
 	        // Lis le header
@@ -92,19 +92,23 @@ namespace RuntimeXNA.OI
 	        file.skipBytes(4);			    // DWORD ocDWSize;	Total size of the structures
 	        int oMovements=file.readAShort();	    // WORD Offset of the movements
 	        int oAnimations=file.readAShort();	    // WORD Offset of the animations
+
 	        file.skipBytes(2);			    // WORD For version versions > MOULI 
+	        file.skipBytes(2);			    // WORD For version versions > MOULI 
+	        int oExtension=file.readAShort();	    // WORD Extension structure 
 	        int oCounter=file.readAShort();             // WORD Pointer to COUNTER structure
-	        int oData=file.readAShort();		    // WORD Pointer to DATA structure
-	        file.skipBytes(2);			    // WORD ocFree;
 	        ocOEFlags=file.readAInt();		    // New flags
 	        for (n=0; n<8; n++)
-	            ocQualifiers[n]=file.readAShort();	    // OC_MAX_QUALIFIERS Qualifier list
-	        int oExtension=file.readAShort();	    // WORD Extension structure 
+		        ocQualifiers[n]=file.readAShort();	    // OC_MAX_QUALIFIERS Qualifier list
+	        int oData=file.readAShort();		    // WORD Pointer to DATA structure
+
+	        
 	        int oValues=file.readAShort();		    // WORD Values structure
 	        int oStrings=file.readAShort();             // WORD String structure
 	        ocFlags2=file.readAShort();		    // WORD New news flags, before was ocEvents
 	        ocOEPrefs=file.readAShort();		    // WORD Automatically modifiable flags
 	        ocIdentifier=file.readAInt();		    // DWORD Identifier d'objet
+	        Console.WriteLine(ocIdentifier.ToString("X"));
 	        ocBackColor=file.readAColor();		    // COLORREF Background color
 	        int oFadeIn=file.readAInt();		    // oFadeIn DWORD Offset fade in 
 	        int oFadeOut=file.readAInt();		    // oFadeOut DWORD Offset fade out 

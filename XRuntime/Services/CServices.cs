@@ -894,7 +894,7 @@ namespace RuntimeXNA.Services
             if (image.mosaic != 0)
             {
                 texture = image.app.imageBank.mosaics[image.mosaic];
-                sourceRect = image.mosaicRectangle;
+                sourceRect = new Rectangle(0, 0, image.width, image.height);
             }
             for (x = 0; x < sx; x++)
             {

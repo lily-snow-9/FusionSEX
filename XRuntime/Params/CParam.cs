@@ -22,13 +22,13 @@ namespace RuntimeXNA.Params
         public CParam()
         {
         }
-        public static CParam create(CRunApp app)
+        public static CParam create(CRunApp app,CFile file)
         {
-            long debut = app.file.getFilePointer();
+            long debut = file.getFilePointer();
 
             CParam param = null;
-            short size = app.file.readAShort();
-            short c = app.file.readAShort();
+            short size = file.readAShort();
+            short c = file.readAShort();
             switch (c)
             {
                 case 1:  // PARAM_OBJECT			
@@ -282,7 +282,7 @@ namespace RuntimeXNA.Params
 
             param.code = c;
             param.load(app);
-            app.file.seek((int)(debut + size));
+            file.seek((int)(debut + size));
             return param;
         }
         public abstract void load(CRunApp app);

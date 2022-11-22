@@ -5,8 +5,11 @@
 // --------------------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using CTFAK.Memory;
 
 namespace RuntimeXNA.Services
 {
@@ -15,6 +18,7 @@ namespace RuntimeXNA.Services
         public short chID=0;
         public short chFlags=0;
         public int chSize=0;
+        public byte[] chData;
 
         // Declaration des types de chunks
         //    public static int CHUNK_PREVIEW=0x1122;
@@ -95,12 +99,38 @@ namespace RuntimeXNA.Services
 	        chID=file.readAShort();
 	        chFlags=file.readAShort();
 	        chSize=file.readAInt();
+	        Console.WriteLine($"Reading any chunk: {chID} - {chFlags}");
+
+	        switch (chFlags)
+	        {
+		        case 3:
+			        chData = Decryption.DecryptChunk(file.readArray(chSize), chSize);
+			        break;
+		        case 2:
+			        chData = Decryption.DecodeMode3(file.readArray(chSize), chSize, chID, out var DecompressedSize);
+			        break;
+		        case 1:
+			        chData = Decompressor.Decompress(file, out DecompressedSize);
+
+			        break;
+		        case 0:
+			        chData = file.readArray(chSize);
+			        break;
+		        default:
+			        throw new InvalidDataException($"Unsupported chunk flag: {chID} - {chFlags}");
+	        }
+	        
     	    return chID;
         }
         
         public void skipChunk(CFile file) 
         {
     	    file.skipBytes((int)chSize);
+        }
+
+        public CFile getFile()
+        {
+	        return new CFile(chData);
         }
     }
 }

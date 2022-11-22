@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CTFAK.Memory;
 using RuntimeXNA.Services;
 using RuntimeXNA.Expressions;
 using RuntimeXNA.OI;
@@ -100,7 +101,7 @@ namespace RuntimeXNA.Application
         public GraphicsDevice graphicsDevice; 
         public ContentManager content;
         public int displayType;
-        public int[] frameOffsets;
+        public CFile[] frameFiles;
         public int frameMaxIndex = 0;
         public string[] framePasswords;
         public string appName = null;
@@ -185,6 +186,9 @@ namespace RuntimeXNA.Application
         public int hdr2Orientation;
         public bool bSignedIn;
         public CArrayList advertisements = null;
+        public string appEditorFilename;
+        public string appTargetFilename;
+        public CFile objectInfoListFile;
 
 #if !WINDOWS_PHONE
         //public StorageDevice storageDevice=null;
@@ -287,22 +291,26 @@ namespace RuntimeXNA.Application
             CChunk chk = new CChunk();
             int posEnd;
             int nbPass = 0, n;
-            while (chk.chID != CChunk.CHUNK_LAST)
+            while (true)
             {
+                var chunkStart = file.getFilePointer();
                 chk.readHeader(file);
+                if (file.isEOF()) break;
                 if (chk.chSize == 0)
                 {
                     continue;
                 }
-                posEnd = file.getFilePointer() + chk.chSize;
-                Console.WriteLine($"Loading chunk {chk.chID}");
+                posEnd = chunkStart + chk.chSize+8;
+                file.seek(posEnd);
+                var chunkReader = chk.getFile();
+                Console.WriteLine($"Reading root chunk: {chk.chID} - {chk.chFlags}");
                 switch (chk.chID)
                 {
                     // CHUNK_APPHEADER
                     case 0x2223:
-                        loadAppHeader(file);
+                        loadAppHeader(chunkReader);
                         // Buffer pour les offsets frame
-                        frameOffsets = new int[gaNbFrames];
+                        frameFiles = new CFile[gaNbFrames];
                         // Pour les password
                         framePasswords = new string[gaNbFrames];
                         for (n = 0; n < gaNbFrames; n++)
@@ -312,68 +320,71 @@ namespace RuntimeXNA.Application
                         break;
                     // CHUNK_APPHEADER2
                     case 0x2245:
-                        hdr2Options = file.readAInt();
-                        file.skipBytes(10);
-                        hdr2Orientation = file.readAShort();
+                        hdr2Options = chunkReader.readAInt();
+                        chunkReader.skipBytes(10);
+                        hdr2Orientation = chunkReader.readAShort();
                         break;
                     // CHUNK_APPNAME
                     case 0x2224:
-                        appName = file.readAString();
+                        appName = chunkReader.readAString();
                         break;
                     // CHUNK_COPYRIGHT
                     case 0x223B:
-                        appCopyright = file.readAString();
+                        appCopyright = chunkReader.readAString();
                         break;
                     // CHUNK_ABOUTTEXT
                     case 0x223A:
-                        appAboutText = file.readAString();
+                        appAboutText = chunkReader.readAString();
                         break;
                     // CHUNK_APPEDITORFILENAME:
                     case 0x222E:
-//                        appEditorFilename = file.readAString();
-//                        appEditorFilename = getParent(appEditorFilename);
+                        appEditorFilename = chunkReader.readAString();
+                        //Decryption.MakeKey(appName, appCopyright, appEditorFilename);
                         break;
                     // CHUNK_APPTARGETFILENAME:
                     case 0x222F:
-//                        appTargetFilename = file.readAString();
-//                        appTargetFilename = getParent(appTargetFilename);
+                        appTargetFilename = chunkReader.readAString();
                         break;
                     // CHUNK_APPDOC
                     case 0x2230:
-                        appDoc = file.readAString();
+                        appDoc = chunkReader.readAString();
                         break;
                     // CHUNK_GLOBALVALUES
                     case 0x2232:
-                        loadGlobalValues(file);
+                        loadGlobalValues(chunkReader);
                         break;
                     // CHUNK_GLOBALSTRINGS
                     case 0x2233:
-                        loadGlobalStrings(file);
+                        loadGlobalStrings(chunkReader);
                         break;
                     // CHUNK_FRAMEITEMS
                     // CHUNK_FRAMEITEMS_2
                     case 0x2229:
                     case 0x223F:
-                        OIList.preLoad(file);
+                        
+                        OIList.preLoad(chunkReader);
+                        objectInfoListFile = chunkReader;
                         break;
                     // CHUNK_FRAMEHANDLES
                     case 0x222B:
-                        loadFrameHandles(file, chk.chSize);
+                        loadFrameHandles(chunkReader, chunkReader.data.Length);
                         break;
 
                     // CHUNK_FRAME
                     case 0x3333:
                         // Repere les positions des frames dans le fichier
-                        frameOffsets[frameMaxIndex] = file.getFilePointer();
+                        frameFiles[frameMaxIndex] = chunkReader;
                         CChunk frChk = new CChunk();
+                        var frReader = frChk.getFile();
+                        break;
                         while (frChk.chID != 0x7F7F)		// CHUNK_LAST
                         {
-                            frChk.readHeader(file);
+                            frChk.readHeader(frReader);
                             if (frChk.chSize == 0)
                             {
                                 continue;
                             }
-                            int frPosEnd = file.getFilePointer() + frChk.chSize;
+                            int frPosEnd = frReader.getFilePointer() + frChk.chSize;
 
                             switch (frChk.chID)
                             {
@@ -382,23 +393,23 @@ namespace RuntimeXNA.Application
                                     break;
                                 // CHUNK_FRAMEPASSWORD
                                 case 0x3336:
-                                    string pass = file.readAString();
+                                    string pass = frReader.readAString();
                                     framePasswords[frameMaxIndex] = pass;
                                     nbPass++;
                                     break;
                             }
-                            file.seek(frPosEnd);
+                            frReader.seek(frPosEnd);
                         }
                         frameMaxIndex++;
                         break;
                     // CHUNK_EXTENSIONS2
                     case 0x2234:
                         extLoader = new CExtLoader(this);
-                        extLoader.loadList(file);
+                        extLoader.loadList(chunkReader);
                         break;
                     // CHUNK_BINARYFILES
                     case 0x2238:
-                        int nFiles = file.readAInt();
+                        int nFiles = chunkReader.readAInt();
                         embeddedFiles = new CEmbeddedFile[nFiles];
                         for (n = 0; n < nFiles; n++)
                         {
@@ -420,7 +431,11 @@ namespace RuntimeXNA.Application
                         break;
                     // CHUNK_IMAGE
                     case 0x6666:
+                        var pos = file.getFilePointer();
+                        imageBank.realFileOffset = chunkStart + 8;
+                        file.seek(imageBank.realFileOffset);
                         imageBank.preLoad();
+                        file.seek(pos);
                         break;
                     // CHUNK_FONT
                     case 0x6667:
@@ -433,8 +448,8 @@ namespace RuntimeXNA.Application
                 }
 
                 // Positionne a la fin du chunk
-                file.seek(posEnd);
             }
+            Console.WriteLine("Finish initial reading");
 
             // Fixe le flags multiple samples
             soundPlayer.setMultipleSounds((gaFlags & GA_MIX) != 0);
