@@ -4,6 +4,7 @@
 //
 //----------------------------------------------------------------------------------
 
+using System;
 using FusionX.Banks;
 using Microsoft.Xna.Framework.Audio;
 
@@ -66,6 +67,7 @@ namespace FusionX.Application
         }
         public void play(short handle, int nLoops, int channel, bool bPrio)
         {
+            
 	        int n;
         	
 	        if (bOn == false)
@@ -161,7 +163,7 @@ namespace FusionX.Application
                 {
                     if (channels[n].isPlaying())
                     {
-                        app.soundBank.setToLoad(channels[n].handle);
+                        app.soundBank.setToLoad((short)channels[n].handle);
                     }
                 }
             }

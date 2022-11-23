@@ -116,7 +116,7 @@ namespace FusionX.Application
         public bool loadFullFrame(int index)
         {
             // Positionne le fichier
-            frFile = app.frameFiles[app.frameHandleToIndex[index]];
+            frFile = app.frameFiles[index];
             frFile.seek(0);
 
             // Charge la frame
@@ -275,8 +275,8 @@ namespace FusionX.Application
             //app.imageBank.load();
             app.file.seek(pos);
             app.fontBank.load();
-            evtProg.enumSounds((IEnum) app.soundBank);
-            app.soundBank.load();
+            //evtProg.enumSounds((IEnum) app.soundBank);
+            //app.soundBank.load();
 
             // Marque les OI de la frame
             app.OIList.resetOICurrent();

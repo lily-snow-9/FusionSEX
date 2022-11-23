@@ -12,7 +12,7 @@ namespace FusionX.Expressions
 	{
 		public override void  evaluate(CRun rhPtr)
 		{
-            rhPtr.getCurrentResult().forceString("XNA");
+            rhPtr.getCurrentResult().forceString("FusionX");
 		}
 	}
 }

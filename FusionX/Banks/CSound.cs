@@ -5,7 +5,10 @@
 //----------------------------------------------------------------------------------
 
 using System;
+using System.IO;
 using FusionX.Application;
+using FusionX.Services;
+using Ionic.Zlib;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 
@@ -13,7 +16,7 @@ namespace FusionX.Banks
 {
     public class CSound
     {
-		public short handle;
+		public int handle;
 		public SoundEffect sound=null;
         public SoundEffectInstance soundInstance = null;
 		public int useCount=0;
@@ -36,17 +39,7 @@ namespace FusionX.Banks
 
         public void loadHandle()
         {
-            handle = application.file.readAShort();
-            application.file.skipBytes(5);
-            int l = application.file.readAShort();
-            if (application.file.bUnicode == false)
-			{
-                application.file.skipBytes(l);
-			}
-			else
-			{
-                application.file.skipBytes(l * 2);
-			}
+            load();
         }
 
         public static CSound createFromSound(CSound source)
@@ -61,26 +54,27 @@ namespace FusionX.Banks
         }
         public void load()
         {
-            handle = application.file.readAShort();
-            type = application.file.readAByte();
-            frequency = application.file.readAInt();
-            int l = application.file.readAShort();
-            name = application.file.readAString(l);
+            handle = application.file.readAInt()-1;
+            var checksum = application.file.readAInt();
+            var references = application.file.readAInt();
+            var decompressedSize = application.file.readAInt();
+            var flags = application.file.readAInt();
+            var res = application.file.readAInt();
+            var nameLen = application.file.readAInt();
+            var size = application.file.readAInt();
+            var decompressedData = new CFile(ZlibStream.UncompressBuffer(application.file.readArray(size)));
+            File.WriteAllBytes($"snd{handle}",decompressedData.data);
+            decompressedData.bUnicode = application.file.bUnicode;
+            name = decompressedData.readAString(nameLen);
+            var actualSoundData = decompressedData.readArray(decompressedData.data.Length - decompressedData.pointer);
+            sound = SoundEffect.FromStream(new MemoryStream(actualSoundData));
+            File.WriteAllBytes(name,actualSoundData);
 
-            string sndName = handle.ToString("D4");
-            sndName = "Snd" + sndName;
-            if (type == 0)
-            {
-                sound = application.content.Load<SoundEffect>(sndName);
-            }
-            else
-            {
-                song = application.content.Load<Song>(sndName);
-            }
         }
 
 		public void play(int nl, bool bPrio, float v, float p)
 		{
+            Console.WriteLine("playing "+name);
 			nLoops=nl;
 			if (nLoops==0)
 			{

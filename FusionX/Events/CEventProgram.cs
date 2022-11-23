@@ -2852,12 +2852,15 @@ namespace FusionX.Events
 				{
 					//file.readAInt();
 					number = file.readAInt();
+					var endPosition = file.getFilePointer() + number;
+
 					List<CEventGroup> tempEvents = new List<CEventGroup>();
 					while(true)
 					{
 						tempEvents.Add(CEventGroup.create(app,file));
 						eventPos++;
-						if (file.pointer >= number) break;//workaround
+						if (file.getFilePointer() >= endPosition) break;
+
 					}
 
 					events = tempEvents.ToArray();

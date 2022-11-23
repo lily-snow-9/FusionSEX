@@ -4,6 +4,7 @@
 //
 //----------------------------------------------------------------------------------
 
+using System;
 using FusionX.Application;
 using FusionX.Events;
 using FusionX.Expressions;
@@ -546,6 +547,8 @@ namespace FusionX.Conditions
 					break;
 				
 			}
+			Console.WriteLine($"Created action: {cnd.GetType().Name}");
+
  			if (cnd != null)
 			{
 				cnd.evtCode = c;

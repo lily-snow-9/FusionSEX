@@ -367,8 +367,9 @@ namespace FusionX.Application
                     // CHUNK_FRAME
                     case 0x3333:
                         // Repere les positions des frames dans le fichier
-                        frameFiles[HCellToNCell((short)frameMaxIndex)] = chunkReader;
+                        frameFiles[frameMaxIndex] = chunkReader;
                         frameMaxIndex++;
+                        Console.WriteLine("Preloading Frame");
                         break;
                     // CHUNK_EXTENSIONS2
                     case 0x2234:
@@ -411,6 +412,7 @@ namespace FusionX.Application
                         break;
                     // CHUNK_SOUNDS
                     case 0x6668:
+                        file.seek(chunkStart+8);
                         soundBank.preLoad(this);
                         break;
                 }

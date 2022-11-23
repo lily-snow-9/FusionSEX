@@ -4,6 +4,7 @@
 //
 // -----------------------------------------------------------------------------
 
+using System;
 using FusionX.Params;
 using FusionX.RunLoop;
 

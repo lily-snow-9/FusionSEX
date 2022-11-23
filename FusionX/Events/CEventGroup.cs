@@ -4,6 +4,7 @@
 //
 //----------------------------------------------------------------------------------
 
+using System;
 using FusionX.Actions;
 using FusionX.Application;
 using FusionX.Conditions;
@@ -76,6 +77,7 @@ namespace FusionX.Events
 			{
 				evg.evgEvents[count++] = CAct.create(app,file);
 			}
+			Console.WriteLine("=======");
 			
 			// Positionne en fin de groupe
 			file.seek(debut - size);

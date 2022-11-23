@@ -4,6 +4,7 @@
 //
 //----------------------------------------------------------------------------------
 
+using System;
 using FusionX.Application;
 using FusionX.Events;
 using FusionX.Params;
@@ -767,7 +768,7 @@ namespace FusionX.Actions
 					break;
 				
 			}
-			
+            Console.WriteLine($"Created action: {act.GetType().Name}");
 			if (act != null)
 			{
 				act.evtCode = c;

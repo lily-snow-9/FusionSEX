@@ -4,6 +4,8 @@
 //
 //----------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
 using FusionX.Application;
 
 namespace FusionX.Banks
@@ -11,11 +13,10 @@ namespace FusionX.Banks
     public class CSoundBank : IEnum
     {
 	    CRunApp app;
-	    CSound[] sounds=null;
+	    private Dictionary<int, CSound> sounds = new Dictionary<int, CSound>();
 	    int nHandlesReel;
 	    int nHandlesTotal;
 	    int nSounds;
-	    int[] offsetsToSounds;
 	    int[] handleToIndex;
 	    int[] useCount;
 //        int enumIndex;
@@ -25,36 +26,28 @@ namespace FusionX.Banks
             app=a;
 		
 			// Nombre de handles
-			nHandlesReel=app.file.readAShort();
-			offsetsToSounds=new int[nHandlesReel];
+			nHandlesReel=app.file.readAInt();
 			
-			// Repere les positions des images
-			int nSons=app.file.readAShort();
+			
 			int n;
-			CSound sound=new CSound(a);
 			int offset;
-			for (n=0; n<nSons; n++)
+			for (n=0; n<nHandlesReel; n++)
 			{
-				offset=app.file.getFilePointer();
+				CSound sound=new CSound(a);
+
 			    sound.loadHandle();
-			    offsetsToSounds[sound.handle]=offset;
+			    sounds.Add(sound.handle,sound);
 			}
-			
+
+			Console.WriteLine("done loading sounds");
 			// Reservation des tables
-			useCount=new int[nHandlesReel];
-			resetToLoad();
-			handleToIndex=null;
-			nHandlesTotal=nHandlesReel;
-			nSounds=0;
-			sounds=null;
+			//useCount=new int[nHandlesReel];
+
 	    }
 
 	    public CSound getSoundFromHandle(short handle)
 	    {
-			if (handle>=0 && handle<nHandlesTotal)
-			    if (handleToIndex[handle]!=-1)
-				return sounds[handleToIndex[handle]];
-			return null;
+		    return sounds[handle];
 	    }
 	    public CSound getSoundFromIndex(int index)
 	    {
@@ -106,6 +99,7 @@ namespace FusionX.Banks
 
 	    public void load()
 	    {
+		    return;
 			int n;
 			
 			// Combien d'images?
@@ -131,15 +125,15 @@ namespace FusionX.Banks
 					}
 					else
 					{
-					    newSounds[count]=new CSound(app);
-                        app.file.seek(offsetsToSounds[h]);
-                        newSounds[count].load();
-					    newSounds[count].useCount=useCount[h];
+					    //newSounds[count]=new CSound(app);
+                        //app.file.seek(offsetsToSounds[h]);
+                        //newSounds[count].load();
+					    //newSounds[count].useCount=useCount[h];
 					}
 					count++;
 			    }
 			}
-			sounds=newSounds;
+			
 		
 			// Cree la table d'indirection
 			handleToIndex=new int[nHandlesReel];
