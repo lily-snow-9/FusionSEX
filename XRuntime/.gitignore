@@ -1,8 +1,0 @@
-*.bak
-*.cachefile
-*.application
-*.exe
-*.xnb
-*.wma
-obj/
-bin/

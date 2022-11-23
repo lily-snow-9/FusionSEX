@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XRuntime", "XRuntime\XRuntime.csproj", "{4A153893-0F87-4DF4-88C4-E6D53292FE9A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FusionX", "FusionX\FusionX.csproj", "{4A153893-0F87-4DF4-88C4-E6D53292FE9A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XRuntimePipeline", "XRuntimePipeline\XRuntimePipeline.csproj", "{B2C7D6CF-50FF-4BC2-B036-65EA4231C959}"
 EndProject
