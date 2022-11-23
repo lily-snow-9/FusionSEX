@@ -8,6 +8,7 @@ using FusionX.Events;
 using FusionX.Objects;
 using FusionX.Params;
 using FusionX.RunLoop;
+using Microsoft.Xna.Framework.Input;
 
 namespace FusionX.Conditions
 {

@@ -4,10 +4,12 @@
 //
 //----------------------------------------------------------------------------------
 
+using System;
 using FusionX.Application;
 using FusionX.Services;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using SpriteFontPlus;
 
 namespace FusionX.Banks
 {
@@ -19,43 +21,36 @@ namespace FusionX.Banks
         public byte lfItalic = 0;
         public int lfWeight = 0;
         public string lfFaceName = null;
-        public SpriteFont spriteFont=null;
+        public DynamicSpriteFont spriteFont=null;
         private ContentManager content;
 
-        public void loadHandle(CFile file)
-        {
-            handle = (short)file.readAShort();
-            if (file.bUnicode == false)
-            {
-                file.skipBytes(4+4+1+32);
-            }
-            else
-            {
-                file.skipBytes(4+4+1+64);
-            }
-        }
+        
 
         public void load(CFile file, ContentManager c)
         {
             content = c;
 
-            handle = (short)file.readAShort();
+            handle = (short)file.readAInt();
+            var dataReader = Decompressor.DecompressAsReader(file, out _);
+            var check = dataReader.readAInt();
+            var references = dataReader.readAInt();
+            var size = dataReader.readAInt();
 
-            int debut = file.getFilePointer();
-            lfHeight = file.readAInt();
-            lfWeight = file.readAInt();
-            lfItalic=(byte)file.readAByte();
-            lfFaceName = file.readAString();
-
-            // Positionne a la fin
-            if (file.bUnicode == false)
-            {
-                file.seek(debut + 41);
-            }
-            else
-            {
-                file.seek(debut + 73);
-            }
+            lfHeight = dataReader.readAInt();
+            var width = dataReader.readAInt();
+            var escapement = dataReader.readAInt();
+            var orientation = dataReader.readAInt();
+            lfWeight = dataReader.readAInt();
+            lfItalic = dataReader.readAByte();
+            var underline = dataReader.readAByte();
+            var strikeout = dataReader.readAByte();
+            var charset = dataReader.readAByte();
+            var outPrecision = dataReader.readAByte();
+            var clipPrecision = dataReader.readAByte();
+            var quality = dataReader.readAByte();
+            var pitchAndFamily = dataReader.readAByte();
+            lfFaceName = dataReader.readAString(32);
+            Console.WriteLine(lfFaceName);
         }
 
         public CFontInfo getFontInfo()
@@ -79,8 +74,9 @@ namespace FusionX.Banks
             return font;
         }
 
-        public SpriteFont getFont()
+        public DynamicSpriteFont getFont()
         {
+            return spriteFont;
             // Cree la fonte
             if (spriteFont == null)
             {
@@ -103,9 +99,10 @@ namespace FusionX.Banks
                 {
                     name+="Italic";
                 }
-                spriteFont = content.Load<SpriteFont>(name);
+                //spriteFont = content.Load<SpriteFont>(name);
             }
-            return spriteFont;
+
+            return null; //spriteFont;
         }
     }
 }

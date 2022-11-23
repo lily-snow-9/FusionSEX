@@ -10,6 +10,7 @@ using FusionX.Banks;
 using FusionX.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SpriteFontPlus;
 
 namespace FusionX.Services
 {
@@ -113,7 +114,7 @@ namespace FusionX.Services
             }
 
             // Cree la fonte
-            SpriteFont f=font.getFont();
+            DynamicSpriteFont f=font.getFont();
 
             // Si retour chariots, coupe la ligne en bouts
             int maxHeight = 0;
@@ -221,7 +222,7 @@ namespace FusionX.Services
             return maxHeight;
         }
 
-        public static int drawIt(SpriteBatchEffect batch, SpriteFont f, string s, short flags, CRect rc, int rgb, int effect, int effectParam)
+        public static int drawIt(SpriteBatchEffect batch, DynamicSpriteFont f, string s, short flags, CRect rc, int rgb, int effect, int effectParam)
         {
             if (s.Length == 0)
             {
@@ -231,7 +232,7 @@ namespace FusionX.Services
             // Calcule la largeur de la chaine
             int hLine;
             int spaceWidth;
-            hLine = f.LineSpacing;
+            hLine = 15;
             spaceWidth = (int)f.MeasureString(" ").X;
 
             int rectWidth = rc.right - rc.left;
@@ -886,7 +887,7 @@ namespace FusionX.Services
             int x, y;
             tempRect.Width = image.width;
             tempRect.Height = image.height;
-            Texture2D texture = image.image;
+            Texture2D texture = image.Image;
             Nullable<Rectangle> sourceRect = null;
             if (image.mosaic != 0)
             {

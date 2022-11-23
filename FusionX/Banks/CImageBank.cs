@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using FusionX.Application;
 using FusionX.Services;
 using Microsoft.Xna.Framework.Graphics;
@@ -29,6 +30,7 @@ namespace FusionX.Banks
         public Texture2D[] mosaics=null;
         public Texture2D[] oldMosaics=null;
         public int realFileOffset;
+        public List<Task> imageReadingTasks = new List<Task>(); 
 
         public CImageBank()
         {
@@ -54,6 +56,7 @@ namespace FusionX.Banks
             
             for (n = 0; n < nHandlesReel; n++)
             {
+                
                 CImage image = new CImage();
                 offset = (int) file.getFilePointer();
                 image.load(app,app.file,false);
@@ -72,8 +75,9 @@ namespace FusionX.Banks
 
         public CImage getImageFromHandle(short handle)
         {
-            return images[handle];
-        
+            var img = images[handle];
+            return img;
+
         }
 
         public CImage getImageFromIndex(short index)
@@ -102,7 +106,9 @@ namespace FusionX.Banks
         // Entree enumeration
         public short enumerate(short num)
         {
-            setToLoad(num);
+            
+            images[num].loadData();
+            
             return -1;
         }
 

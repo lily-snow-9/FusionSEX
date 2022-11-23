@@ -35,7 +35,7 @@ namespace FusionX.Expressions
                 if (x > 0 && x < image.width && y > 0 && y < image.height)
                 {
                     int[] pixels = new int[image.width * image.height];
-                    image.image.GetData(pixels);
+                    image.Image.GetData(pixels);
                     rgb = pixels[y * image.width + x] & 0xFFFFFF;
                     rgb = CServices.swapRGB(rgb);
                 }

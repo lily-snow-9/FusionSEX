@@ -6,6 +6,7 @@
 
 using System;
 using FusionX.Services;
+using RuntimeXNA.Extensions;
 
 namespace FusionX.Extensions
 {
@@ -31,11 +32,19 @@ namespace FusionX.Extensions
 
         public CRunExtension loadRunObject()
         {
-	        CRunExtension pObject=null;
-        	
-//F01 			
-	            //F01END	        	
-	        return pObject;
+            CRunExtension pObject = null;
+            if (name == "kcini")
+            {
+                pObject=new CRunkcini();
+                
+                
+            }
+
+            if (pObject == null)
+            {
+                Console.WriteLine("Unimplemented extension: "+name);
+            }
+            return pObject;
         }
 
     }

@@ -636,7 +636,7 @@ namespace FusionX.RunLoop
                 if (mouseKey>=0)
                 {
                     long delta=rhApp.timer-mouseKeyTime;
-                    if (delta<500)
+                    if (delta<100)
                     {
                         nClicks=2;
                         mouseKeyTime=0;

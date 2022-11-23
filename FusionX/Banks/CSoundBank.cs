@@ -33,6 +33,7 @@ namespace FusionX.Banks
 			int offset;
 			for (n=0; n<nHandlesReel; n++)
 			{
+				
 				CSound sound=new CSound(a);
 
 			    sound.loadHandle();

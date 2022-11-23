@@ -73,7 +73,7 @@ namespace FusionX.Sprites
             ySpot = image.ySpot;
 
             int[] pixels=new int[width*height];
-            Texture2D texture = image.image;
+            Texture2D texture = image.Image;
             Nullable<Rectangle> sourceRect = null;
             if (image.mosaic != 0)
             {

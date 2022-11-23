@@ -32,7 +32,9 @@ namespace FusionX.Movements
             mdSinus=file.readAShort();
             mdLength=file.readAShort();
             mdPause=file.readAShort();
+            file.bUnicode = false;
             string name=file.readAString();
+            file.bUnicode = true;
             if (name.Length > 0)
             {
                 mdName = name;

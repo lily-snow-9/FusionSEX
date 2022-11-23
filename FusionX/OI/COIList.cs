@@ -58,7 +58,7 @@ namespace FusionX.OI
                             break;
                         // CHUNK_OBJECTSCOMMON
                         case 0x4446:
-                            objFile.pointer = 0;
+                            objFile.reader.BaseStream.Position = 0;
                             ois[index].objectCommonFile = objFile;
                             break;
                     }

@@ -115,6 +115,7 @@ namespace FusionX.Application
         // Charge la frame
         public bool loadFullFrame(int index)
         {
+            Console.WriteLine("Loading frame");
             // Positionne le fichier
             frFile = app.frameFiles[index];
             frFile.seek(0);
@@ -270,11 +271,13 @@ namespace FusionX.Application
             app.fontBank.resetToLoad();
             app.OIList.load(app.objectInfoListFile, app);
             app.OIList.enumElements((IEnum) app.imageBank, (IEnum)app.fontBank);
-            var pos = app.file.getFilePointer();
-            app.file.seek(app.imageBank.realFileOffset);
-            //app.imageBank.load();
-            app.file.seek(pos);
-            app.fontBank.load();
+            
+            foreach (var task in app.imageBank.imageReadingTasks)
+            {
+                task.Wait();
+            }
+            
+            //app.fontBank.load();
             //evtProg.enumSounds((IEnum) app.soundBank);
             //app.soundBank.load();
 

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using SpriteFontPlus;
 
 namespace FusionX.Sprites
 {
@@ -125,7 +126,7 @@ namespace FusionX.Sprites
             SetEffect(CSpriteGen.BOP_COPY);
             batch.DrawString(font, s, v, c);
         }
-        public void DrawString(SpriteFont font, String s, Vector2 v, Color c, int e, int effectParam)
+        public void DrawString(DynamicSpriteFont font, String s, Vector2 v, Color c, int e, int effectParam)
         {
             if (e!=effect)
                 SetEffect(e);

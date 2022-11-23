@@ -5,6 +5,7 @@
 //----------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using FusionX.Application;
 using FusionX.Services;
 
@@ -14,7 +15,7 @@ namespace FusionX.Banks
     {
         CRunApp app;
         CFile file;
-        public CFont[] fonts = null;          /// List of CFonts
+        public Dictionary<int,CFont> fonts = new Dictionary<int, CFont>();          /// List of CFonts
         int[] offsetsToFonts;
         int nFonts = 0;
         short[] handleToIndex;
@@ -34,79 +35,28 @@ namespace FusionX.Banks
         public void preLoad()
         {
             // Nombre d'elements
-            int nFonts = file.readAShort();
-            nHandlesReel = file.readAShort();
+            
+            nHandlesReel = file.readAInt();
+            
             int n;
 
             offsetsToFonts = new int[nHandlesReel];
 
             // Explore les handles
             int debut = file.getFilePointer();
-            CFont temp = new CFont();
-            for (n = 0; n < nFonts; n++)
+            for (n = 0; n < nHandlesReel; n++)
             {
-                debut = file.getFilePointer();
-                temp.loadHandle(file);
-                offsetsToFonts[temp.handle] = debut;
+                CFont font = new CFont();
+                font.load(file,app.content);
+                fonts.Add(font.handle,font);
             }
             useCount = new short[nHandlesReel];
-            resetToLoad();
-            handleToIndex = null;
-            nHandlesTotal = nHandlesReel;
-            nFonts = 0;
-            fonts = null;
+            
         }
 
         public void load()
         {
-            int n;
-            nFonts = 0;
-            for (n = 0; n < nHandlesTotal; n++)
-            {
-                if (useCount[n] != 0)
-                {
-                    nFonts++;
-                }
-            }
-
-            CFont[] newFonts = new CFont[nFonts];
-            int count = 0;
-            int h;
-            for (h = 0; h < nHandlesReel; h++)
-            {
-                if (useCount[h] != 0)
-                {
-                    if (fonts != null && handleToIndex[h] != -1 && fonts[handleToIndex[h]] != null)
-                    {
-                        newFonts[count] = fonts[handleToIndex[h]];
-                        newFonts[count].useCount = useCount[h];
-                    }
-                    else
-                    {
-                        newFonts[count] = new CFont();
-                        file.seek(offsetsToFonts[h]);
-                        newFonts[count].load(file, app.content);
-                        newFonts[count].useCount = useCount[h];
-                    }
-                    count++;
-                }
-            }
-            fonts = newFonts;
-
-            // Cree la table d'indirection
-            handleToIndex = new short[nHandlesReel];
-            for (n = 0; n < nHandlesReel; n++)
-            {
-                handleToIndex[n] = -1;
-            }
-            for (n = 0; n < nFonts; n++)
-            {
-                handleToIndex[fonts[n].handle] = (short) n;
-            }
-            nHandlesTotal = nHandlesReel;
-
-            // Plus rien a charger
-            resetToLoad();
+            
         }
 
         public CFont getFontFromHandle(short handle)
@@ -264,7 +214,7 @@ namespace FusionX.Banks
                 }
                 fFound = nFonts;
                 nFonts += 10;
-                fonts = newFonts;
+                //fonts = newFonts;
             }
 
             // Ajoute la nouvelle image

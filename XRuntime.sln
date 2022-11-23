@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FusionXExporter", "FusionXE
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FusionXport", "FusionXport\FusionXport.vcxproj", "{0B0794D2-45AF-44ED-90C2-FA9672B4E93B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC9D2}") = "CTFAK-Native", "CTFAK-Native\CTFAK-Native.vcxproj", "{0B0794D2-45AF-44ED-90C2-FA9672B4E93B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +68,7 @@ Global
 		{0B0794D2-45AF-44ED-90C2-FA9672B4E93B}.Debug|x86.Build.0 = Debug|x86
 		{0B0794D2-45AF-44ED-90C2-FA9672B4E93B}.Debug|x64.ActiveCfg = Debug|x64
 		{0B0794D2-45AF-44ED-90C2-FA9672B4E93B}.Debug|x64.Build.0 = Debug|x64
+		{0B0794D2-45AF-44ED-90C2-FA9672B4E93B}.Debug|x64.ActiveCfg = Release|x64
+		{0B0794D2-45AF-44ED-90C2-FA9672B4E93B}.Debug|x64.Build.0 = Release|x64
 	EndGlobalSection
 EndGlobal

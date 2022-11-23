@@ -1245,7 +1245,7 @@ namespace FusionX.Sprites
                     coef = (float)((128 - effectParam) / 128.0);
                 }
                 color= color* coef;
-                Texture2D texture = ptei.image;
+                Texture2D texture = ptei.Image;
                 Nullable<Rectangle> sourceRect = null;
                 if (ptei.mosaic != 0)
                 {
@@ -1313,7 +1313,7 @@ namespace FusionX.Sprites
                         tempRect.Height = (int)(ptei.height*ptSpr.sprScaleY);
                         vector.X = hsx;
                         vector.Y = hsy;
-                        Texture2D texture = ptei.image;
+                        Texture2D texture = ptei.Image;
                         Nullable<Rectangle> sourceRect = null;
                         if (ptei.mosaic != 0)
                         {

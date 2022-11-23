@@ -1,5 +1,10 @@
-﻿using System;
+﻿//#define USE_IONIC
+using System;
+using System.IO;
 using Ionic.Zlib;
+using Joveler.Compression.ZLib;
+using DeflateStream = Joveler.Compression.ZLib.DeflateStream;
+
 
 
 namespace FusionX.Services
@@ -20,17 +25,43 @@ namespace FusionX.Services
 
         public static byte[] DecompressBlock(CFile reader, int size, int decompSize)
         {
-            var newData = ZlibStream.UncompressBuffer(reader.readArray(size));
+#if USE_IONIC
+            return ZlibStream.UncompressBuffer(reader.readArray(size));
+#else
+            ZLibDecompressOptions decompOpts = new ZLibDecompressOptions();
+
+            using (MemoryStream fsComp = new MemoryStream(reader.readArray(size)))
+            using (MemoryStream fsDecomp = new MemoryStream())
+            using (ZLibStream zs = new ZLibStream(fsComp, decompOpts))
+            {
+                zs.CopyTo(fsDecomp);
+                var newData = fsDecomp.GetBuffer();
+                Array.Resize<byte>(ref newData, decompSize);
+                return newData;
+            }
+#endif
             // Trimming array to decompSize,
             // because ZlibStream always pads to 0x100
-            Array.Resize<byte>(ref newData, decompSize);
-            return newData;
+
         }
 
         public static byte[] DecompressBlock(CFile reader, int size)
         {
-            // We have no original size, so we are gonna just leave everything as is
+#if USE_IONIC
             return ZlibStream.UncompressBuffer(reader.readArray(size));
+
+#else
+            ZLibDecompressOptions decompOpts = new ZLibDecompressOptions();
+
+            using (MemoryStream fsComp = new MemoryStream(reader.readArray(size)))
+            using (MemoryStream fsDecomp = new MemoryStream())
+            using (ZLibStream zs = new ZLibStream(fsComp, decompOpts))
+            {
+                zs.CopyTo(fsDecomp);
+                var newData = fsDecomp.GetBuffer();
+                return newData;
+            }
+#endif
         }
 
 

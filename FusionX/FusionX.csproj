@@ -20,9 +20,11 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Ionic.Zlib" Version="1.9.1.5" />
+        <PackageReference Include="Joveler.Compression.ZLib" Version="4.1.0" />
         <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
         <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" />
         <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
+        <PackageReference Include="SpriteFontPlus.MonoGame" Version="0.7.0.22" />
     </ItemGroup>
     <ItemGroup>
       <None Remove="Content\Content.mgcb" />

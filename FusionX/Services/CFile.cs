@@ -5,99 +5,75 @@
 //----------------------------------------------------------------------------------
 
 using System;
+using System.IO;
 
 namespace FusionX.Services
 {
     public class CFile
     {
-        public byte[] data;
-        public int pointer = 0;
+ 
         public bool bUnicode=true;
+        public BinaryReader reader;
 
         public CFile()
         {
         }
         public CFile(CFile file)
         {
-            data = file.data;
-            pointer = 0;
+            //data = file.data;
+            //pointer = 0;
         }
         public CFile(byte[] dt)
         {
-            data = dt;
-            pointer=0;
+            reader = new BinaryReader(new MemoryStream(dt));
         }
         public CFile(CFile source, int length)
         {
-            data = new byte[length];
+            /*data = new byte[length];
             int n;
             for (n = 0; n < length; n++)
             {
                 data[n] = source.data[source.pointer + n];
             }
             source.pointer += n;
-            bUnicode = source.bUnicode;
+            bUnicode = source.bUnicode;*/
         }
         public bool isEOF()
         {
-            return pointer >= data.Length;
+            return reader.BaseStream.Position >= reader.BaseStream.Length;
         }
 
 
-        public void adjustTo8()
-        {
-            if ((pointer & 0x07) != 0)
-            {
-                pointer += 8 - (pointer & 0x07);
-            }
-        }
+       
 
         public int readUnsignedByte()
         {
-            if (pointer < data.Length)
-            {
-                return data[pointer++] & 255;
-            }
-            return 0;
+            return reader.ReadByte();
         }
 
-        public short readShort()
-        {
-            int b1 = readUnsignedByte();
-            int b2 = readUnsignedByte();
-            return (short) ((b1 << 8) | b2);
-        }
+        
 
         public byte readByte()
         {
-            if (pointer < data.Length)
-            {
-                return data[pointer++];
-            }
-            return 0;
-        }
 
+            return reader.ReadByte();
+        }
+        public byte[] readArray()
+        {
+            return reader.ReadBytes((int)(reader.BaseStream.Length-reader.BaseStream.Position));
+        }
         public byte[] readArray(int size)
         {
-            if (size<0)
-            {
-                size=data.Length;
-            }
-            byte[] array=new byte[size];
-            int n;
-            for (n = 0; n < size; n++)
-            {
-                array[n] = data[pointer++];
-            }
-            return array;
+            return reader.ReadBytes(size);
         }
 
         public int read(byte[] dest, int size)
         {
             int n;
+            var newData = reader.ReadBytes(size);
             for (n = 0; n < size; n++)
             {
-                dest[n] = data[pointer++];
+                dest[n] = newData[n];
             }
             return n;
         }
@@ -105,45 +81,32 @@ namespace FusionX.Services
         public int read(byte[] dest)
         {
             int n;
+            var newData = reader.ReadBytes(dest.Length);
             for (n = 0; n < dest.Length; n++)
             {
-                dest[n] = data[pointer++];
+                dest[n] = newData[n];
             }
             return n;
         }
 
         public void skipBytes(int n)
         {
-            if (pointer + n >= data.Length)
-            {
-                n = data.Length - pointer;
-            }
-            pointer += n;
+            reader.BaseStream.Position += n;
         }
 
         public void skipBack(int n)
         {
-            int pos = getFilePointer();
-            pos -= n;
-            if (pos < 0)
-            {
-                pos = 0;
-            }
-            seek(pos);
+            reader.BaseStream.Position -= n;
         }
 
         public void seek(int pos)
         {
-            if (pos >= data.Length)
-            {
-                pos = data.Length;
-            }
-            pointer = pos;
+            reader.BaseStream.Seek(pos,SeekOrigin.Begin);
         }
  
         public int getFilePointer()
         {
-            return pointer;
+            return (int)reader.BaseStream.Position;
         }
 
         public void setUnicode(bool unicode)
@@ -153,23 +116,17 @@ namespace FusionX.Services
 
         public byte readAByte()
         {
-            return data[pointer++];
+            return reader.ReadByte();
         }
 
         public short readAShort()
         {
-            int b1, b2;
-            b1 = readUnsignedByte();
-            b2 = readUnsignedByte();
-            return (short) (b2 * 256 + b1);
+            return reader.ReadInt16();
         }
 
         public char readAChar()
         {
-            int b1, b2;
-            b1 = readUnsignedByte();
-            b2 = readUnsignedByte();
-            return (char) (b2 * 256 + b1);
+            return Convert.ToChar(reader.ReadInt16());
         }
 
         public void readAChar(char[] b) 
@@ -178,20 +135,13 @@ namespace FusionX.Services
             int n;
             for (n=0; n<b.Length; n++)
             {
-                b1 = readUnsignedByte();
-                b2 = readUnsignedByte();
-                b[n]=(char) (b2 * 256 + b1);
+                b[n] = readAChar();
             }
         }
 
         public int readAInt()
         {
-            int b1, b2, b3, b4;
-            b1 = readUnsignedByte();
-            b2 = readUnsignedByte();
-            b3 = readUnsignedByte();
-            b4 = readUnsignedByte();
-            return b4 * 0x01000000 + b3 * 0x00010000 + b2 * 0x00000100 + b1;
+            return reader.ReadInt32();
         }
 
         public int readAColor()
@@ -206,31 +156,14 @@ namespace FusionX.Services
 
         public float readAFloat()
         {
-            int b1, b2, b3, b4;
-            b1 = readUnsignedByte();
-            b2 = readUnsignedByte();
-            b3 = readUnsignedByte();
-            b4 = readUnsignedByte();
-            int total = b4 * 0x01000000 + b3 * 0x00010000 + b2 * 0x00000100 + b1;
-            return (float) total / (float) 65536.0;
+
+            return reader.ReadSingle();
         }
 
         public double readADouble()
         {
-            int b1, b2, b3, b4, b5, b6, b7, b8;
-            b1 = readUnsignedByte();
-            b2 = readUnsignedByte();
-            b3 = readUnsignedByte();
-            b4 = readUnsignedByte();
-            b5 = readUnsignedByte();
-            b6 = readUnsignedByte();
-            b7 = readUnsignedByte();
-            b8 = readUnsignedByte();
-            long total1 = ((long) b4) * 0x01000000 + ((long) b3) * 0x00010000 + ((long) b2) * 0x00000100 + (long) b1;
-            long total2 = ((long) b8) * 0x01000000 + ((long) b7) * 0x00010000 + ((long) b6) * 0x00000100 + (long) b5;
-            long total = (total2 << 32) | total1;
-            double temp = (double) total / (double) 65536.0;
-            return temp / (double) 65536.0;
+
+            return reader.ReadDouble();
         }
 
         public string readAString(int size)
@@ -429,7 +362,7 @@ namespace FusionX.Services
                 int b;
                 do
                 {
-                    b = readShort();
+                    b = readAShort();
                 } while (b != 0);
             }
         }

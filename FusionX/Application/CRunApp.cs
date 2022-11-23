@@ -5,6 +5,7 @@
 //----------------------------------------------------------------------------------
 
 using System;
+using System.IO;
 using FusionX.Banks;
 using FusionX.Expressions;
 using FusionX.Extensions;
@@ -16,6 +17,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SpriteFontPlus;
 
 #if !WINDOWS_PHONE
 //using Microsoft.Xna.Framework.Storage;
@@ -298,6 +300,7 @@ namespace FusionX.Application
                 posEnd = chunkStart + chk.chSize+8;
                 file.seek(posEnd);
                 var chunkReader = chk.getFile();
+                Console.WriteLine(chk.chID);
                 switch (chk.chID)
                 {
                     // CHUNK_APPHEADER
@@ -361,7 +364,7 @@ namespace FusionX.Application
                         break;
                     // CHUNK_FRAMEHANDLES
                     case 0x222B:
-                        loadFrameHandles(chunkReader, chunkReader.data.Length);
+                        loadFrameHandles(chunkReader, (int)chunkReader.reader.BaseStream.Length);
                         break;
 
                     // CHUNK_FRAME
@@ -400,26 +403,36 @@ namespace FusionX.Application
                         break;
                     // CHUNK_IMAGE
                     case 0x6666:
-                        var pos = file.getFilePointer();
+                        var imgPos = file.getFilePointer();
                         imageBank.realFileOffset = chunkStart + 8;
                         file.seek(imageBank.realFileOffset);
                         imageBank.preLoad();
-                        file.seek(pos);
+                        file.seek(imgPos);
                         break;
                     // CHUNK_FONT
                     case 0x6667:
+                        var fntPos = file.getFilePointer();
+                        file.seek(chunkStart+8);
                         fontBank.preLoad();
+                        file.seek(fntPos);
                         break;
                     // CHUNK_SOUNDS
                     case 0x6668:
+                        var sndPos = file.getFilePointer();
                         file.seek(chunkStart+8);
                         soundBank.preLoad(this);
+                        file.seek(sndPos);
                         break;
                 }
 
                 // Positionne a la fin du chunk
             }
 
+
+            var newFont = new CFont();
+            newFont.handle = 0;
+            newFont.spriteFont = DynamicSpriteFont.FromTtf(File.ReadAllBytes("arial.ttf"),15);
+            fontBank.fonts.Add(0,newFont);
             // Fixe le flags multiple samples
             soundPlayer.setMultipleSounds((gaFlags & GA_MIX) != 0);
 

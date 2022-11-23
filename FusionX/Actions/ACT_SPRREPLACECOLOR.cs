@@ -115,7 +115,7 @@ namespace FusionX.Actions
                 Color[] pixels = new Color[width * height];
                 if (sourceImg.mosaic == 0)
                 {                    
-                    sourceImg.image.GetData(pixels);
+                    sourceImg.Image.GetData(pixels);
                     CServices.replaceColor(rhPtr.rhApp, pixels, width, height, oldColor, newColor);
                     Texture2D texture2 = new Texture2D(rhPtr.rhApp.spriteBatch.GraphicsDevice, width, height);
                     texture2.SetData(pixels);

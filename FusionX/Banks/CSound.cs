@@ -62,19 +62,26 @@ namespace FusionX.Banks
             var res = application.file.readAInt();
             var nameLen = application.file.readAInt();
             var size = application.file.readAInt();
-            var decompressedData = new CFile(ZlibStream.UncompressBuffer(application.file.readArray(size)));
-            File.WriteAllBytes($"snd{handle}",decompressedData.data);
+            var decompressedData = new CFile(Decompressor.DecompressBlock(application.file,size));
             decompressedData.bUnicode = application.file.bUnicode;
             name = decompressedData.readAString(nameLen);
-            var actualSoundData = decompressedData.readArray(decompressedData.data.Length - decompressedData.pointer);
-            sound = SoundEffect.FromStream(new MemoryStream(actualSoundData));
-            File.WriteAllBytes(name,actualSoundData);
+            var actualSoundData = decompressedData.readArray((int)(decompressedData.reader.BaseStream.Length-decompressedData.reader.BaseStream.Position));
+            try
+            {
+                sound = SoundEffect.FromStream(new MemoryStream(actualSoundData));
 
+            }
+            catch
+            {
+            }
         }
 
 		public void play(int nl, bool bPrio, float v, float p)
 		{
-            Console.WriteLine("playing "+name);
+            if (sound == null)
+            {
+                return;
+            }
 			nLoops=nl;
 			if (nLoops==0)
 			{

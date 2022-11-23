@@ -33,12 +33,27 @@ namespace FusionX.Banks
         public short xAP;
         public short yAP;
         public short useCount;
-        public Texture2D image;
+
+        public Texture2D Image
+        {
+	        get
+	        {
+		        
+		        return _image;
+	        }
+        }
+
+        private Texture2D _image;
+       
 	    public CMask maskNormal;
 	    public CMask maskPlatform;	    
 	    public const int maxRotatedMasks=10;
 		public CArrayList maskRotation=null;
     	public short mosaic=0;
+        private int trans;
+        private byte[] theData;
+        private bool isImageLoaded;
+        private int dataSize;
 
         public void loadHandle(CFile file)
         {
@@ -54,12 +69,10 @@ namespace FusionX.Banks
 
             var imgData = Decompressor.Decompress(file, out _);
             var imgFile = new CFile(imgData);
-            imgFile.seek(0);
-
-	        imgFile.seek(0);
+            
             var checksum = imgFile.readAInt();
             var references = imgFile.readAInt();
-            var size = imgFile.readAInt();
+            dataSize = imgFile.readAInt();
             width = imgFile.readAShort();
             height = imgFile.readAShort();
             var graphicMode = imgFile.readAByte();
@@ -69,21 +82,15 @@ namespace FusionX.Banks
             ySpot = imgFile.readAShort();
             xAP = imgFile.readAShort();
             yAP = imgFile.readAShort();
-            var trans = imgFile.readArray(4);
-            image = new Texture2D(app.graphicsDevice,width,height);
-            byte[] theData;
-            if (Flags["LZX"])
-            {
-	            var decompressed = imgFile.readAInt();
-	            theData = imgFile.readArray(imgFile.data.Length - imgFile.pointer);
-	            theData = ZlibStream.UncompressBuffer(theData);
-            }
-            else theData = imgFile.readArray(size);
+            trans = imgFile.readAInt();
+            
+            theData = imgFile.readArray();
+
+            
 
 
 
            
-            image.SetData(ImageHelper.TranslateImage(width,height,theData,trans),0,4*width*height);
             
             mosaic = 0;
            
@@ -92,6 +99,26 @@ namespace FusionX.Banks
             
             //image = Texture2D.FromFile(app.graphicsDevice, @"D:\KostyasLair\kostyasparty2.png"); 
             
+        }
+		
+        public void loadData()
+        {
+	        if (!isImageLoaded)
+	        {
+		        _image = new Texture2D(app.graphicsDevice,width,height);
+		        var newFile = new CFile(theData);
+		        if (Flags["LZX"])
+		        {
+			        var decompressed = newFile.readAInt();
+
+			        theData = Decompressor.DecompressBlock(newFile,
+				        (int)(newFile.reader.BaseStream.Length - newFile.reader.BaseStream.Position));
+		        }
+		        else theData = newFile.readArray(dataSize);
+		        _image.SetData(ImageHelper.TranslateImage(width,height,theData,trans,Flags["Alpha"]),0,4*width*height);
+		        isImageLoaded = true;
+	        }
+
         }
         public CMask getMask(int flags, int angle, float scaleX, float scaleY)
         {

@@ -1,8 +1,10 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using FusionX.Application;
 using FusionX.Services;
 using FusionX.Sprites;
+using Joveler.Compression.ZLib;
 using Microsoft.Xna.Framework;
 #if !WINDOWS_PHONE
 //using Microsoft.Xna.Framework.GamerServices;
@@ -91,6 +93,35 @@ namespace FusionX
         {
             spriteBatch = new SpriteBatchEffect(Content, GraphicsDevice);
             IsMouseVisible = true;
+            
+            string arch = null;
+            switch (RuntimeInformation.ProcessArchitecture)
+            {
+                case Architecture.X86:
+                    arch = "x86";
+                    break;
+                case Architecture.X64:
+                    arch = "x64";
+                    break;
+                case Architecture.Arm:
+                    arch = "armhf";
+                    break;
+                case Architecture.Arm64:
+                    arch = "arm64";
+                    break;
+            }
+            string libPath = Path.Combine(arch, "zlibwapi.dll");
+            
+
+            if (!File.Exists(libPath))
+                throw new PlatformNotSupportedException($"Unable to find native library [{libPath}].");
+
+            ZLibInit.GlobalInit(libPath);
+            String libraryFile = Path.Combine(Path.GetDirectoryName(typeof(Game1).Assembly.Location), "x64",
+                "CTFAK-Native.dll");
+            NativeLib.LoadLibrary(libraryFile);
+            
+            
             //BinaryRead.Data cca = Content.Load<BinaryRead.Data>("Application");
 
             var args = Environment.GetCommandLineArgs();

@@ -759,7 +759,6 @@ namespace FusionX.Actions
                                 break;
 
                             default: 
-	                            System.Console.Out.WriteLine("*** Missing action!");
 								act = new CActExtension(); // EXTENSIONS
 								break;
 							
@@ -768,7 +767,7 @@ namespace FusionX.Actions
 					break;
 				
 			}
-            Console.WriteLine($"Created action: {act.GetType().Name}");
+            //Console.WriteLine($"Created action: {act.GetType().Name}");
 			if (act != null)
 			{
 				act.evtCode = c;

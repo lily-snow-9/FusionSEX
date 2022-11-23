@@ -547,7 +547,7 @@ namespace FusionX.Conditions
 					break;
 				
 			}
-			Console.WriteLine($"Created action: {cnd.GetType().Name}");
+			//Console.WriteLine($"Created action: {cnd.GetType().Name}");
 
  			if (cnd != null)
 			{
