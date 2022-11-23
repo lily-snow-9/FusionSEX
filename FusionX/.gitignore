@@ -6,3 +6,5 @@
 *.wma
 obj/
 bin/
+Debug/
+Release/
