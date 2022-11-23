@@ -574,7 +574,6 @@ namespace RuntimeXNA.Conditions
 			{
 				System.Console.Out.WriteLine("*** Missing condition!");
 			}
-			
 			// Positionne a la fin de la condition
 			file.seek((int)(debut + size));
 			

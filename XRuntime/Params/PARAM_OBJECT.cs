@@ -18,11 +18,11 @@ namespace RuntimeXNA.Params
 		public short oi;
 		public short type;
 		
-		public override void  load(CRunApp app)
+		public override void  load(CRunApp app,CFile file)
 		{
-			oiList = app.file.readAShort();
-			oi = app.file.readAShort();
-			type = app.file.readAShort();
+			oiList = file.readAShort();
+			oi = file.readAShort();
+			type = file.readAShort();
 		}
 	}
 }

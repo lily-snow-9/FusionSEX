@@ -21,13 +21,13 @@ namespace RuntimeXNA.Params
 		public const short PRGFLAGS_WAIT = (short) (0x0001);
 		public const short PRGFLAGS_HIDE = (short) (0x0002);
 		
-		public override void  load(CRunApp app)
+		public override void  load(CRunApp app,CFile file)
 		{
-			flags = app.file.readAShort();
-			int debut = app.file.getFilePointer();
-			filename = app.file.readAString();
-			app.file.seek(debut + 260); // _MAX_PATH
-			command = app.file.readAString();
+			flags = file.readAShort();
+			int debut = file.getFilePointer();
+			filename = file.readAString();
+			file.seek(debut + 260); // _MAX_PATH
+			command = file.readAString();
 		}
 	}
 }

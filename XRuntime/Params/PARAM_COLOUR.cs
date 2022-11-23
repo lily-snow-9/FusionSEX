@@ -16,9 +16,9 @@ namespace RuntimeXNA.Params
 	{
 		public int color;
 		
-		public override void  load(CRunApp app)
+		public override void  load(CRunApp app,CFile file)
 		{
-			color = app.file.readAColor();
+			color = file.readAColor();
 		}
 	}
 }

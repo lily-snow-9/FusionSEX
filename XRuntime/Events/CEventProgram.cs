@@ -2815,8 +2815,8 @@ namespace RuntimeXNA.Events
 			while (true)
 			{
 				if (file.isEOF()) break;
-				file.read(code);
 				
+				file.read(code);
 				// EVTFILECHUNK_HEAD
 				if (code[0] == 'E' && code[1] == 'R' && code[2] == '>' && code[3] == '>')
 				{
@@ -2866,6 +2866,7 @@ namespace RuntimeXNA.Events
 					events = tempEvents.ToArray();
 
 					nEvents = events.Length;
+					return;
 
 				}
 				else if (code[0] == 'E' && code[1] == 'R' && code[2] == 'o' && code[3] == 'p')

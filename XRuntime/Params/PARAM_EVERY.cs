@@ -17,10 +17,10 @@ namespace RuntimeXNA.Params
 		public int delay;
 		public int compteur;
 		
-		public override void  load(CRunApp app)
+		public override void  load(CRunApp app,CFile file)
 		{
-			delay = app.file.readAInt();
-			compteur = app.file.readAInt();
+			delay = file.readAInt();
+			compteur = file.readAInt();
 		}
 	}
 }

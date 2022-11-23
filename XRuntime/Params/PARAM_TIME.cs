@@ -18,10 +18,10 @@ namespace RuntimeXNA.Params
 		public int timer;
 		public int loops;
 		
-		public override void  load(CRunApp app)
+		public override void  load(CRunApp app,CFile file)
 		{
-			timer = app.file.readAInt();
-			loops = app.file.readAInt();
+			timer = file.readAInt();
+			loops = file.readAInt();
 		}
 	}
 }

@@ -966,7 +966,6 @@ namespace RuntimeXNA.RunLoop
                 // Creation de l'objet                
                 if ((ocPtr.ocOEFlags & CObjectCommon.OEFLAG_DONTCREATEATSTART) == 0)
                 {
-                    Console.WriteLine($"Creating object: {oiPtr.oiName}");
                     f_CreateObject(loPtr.loHandle, loPtr.loOiHandle, 0x7FFFFFFF, 0x7FFFFFFF, -1, creatFlags, -1, -1);
                 }
             }

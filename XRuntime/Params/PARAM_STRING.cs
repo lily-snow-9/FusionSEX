@@ -16,9 +16,9 @@ namespace RuntimeXNA.Params
 	{
 		public System.String pString;
 		
-		public override void  load(CRunApp app)
+		public override void  load(CRunApp app,CFile file)
 		{
-			pString = app.file.readAString();
+			pString = file.readAString();
 		}
 	}
 }

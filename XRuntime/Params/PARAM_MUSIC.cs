@@ -17,10 +17,10 @@ namespace RuntimeXNA.Params
 		public short sndHandle;
 		public short sndFlags;
 		
-		public override void  load(CRunApp app)
+		public override void  load(CRunApp app,CFile file)
 		{
-			sndHandle = app.file.readAShort();
-			sndFlags = app.file.readAShort();
+			sndHandle = file.readAShort();
+			sndFlags = file.readAShort();
 		}
 	}
 }

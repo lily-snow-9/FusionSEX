@@ -22,10 +22,10 @@ namespace RuntimeXNA.Params
 		public const short GRPFLAGS_GROUPINACTIVE = (short) (0x0008);
 		public const short GRPFLAGS_GLOBAL = (short) (0x0010);
 		
-		public override void  load(CRunApp app)
+		public override void  load(CRunApp app,CFile file)
 		{
-			grpFlags = app.file.readAShort();
-			grpId = app.file.readAShort();
+			grpFlags = file.readAShort();
+			grpId = file.readAShort();
 		}
 	}
 }

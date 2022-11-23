@@ -142,6 +142,5 @@ namespace RuntimeXNA.Params
 		}
 		
 		
-		public abstract override void  load(CRunApp app);
 	}
 }

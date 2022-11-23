@@ -16,9 +16,9 @@ namespace RuntimeXNA.Params
     {
         public System.String pEffect;
 
-        public override void load(CRunApp app)
+        public override void load(CRunApp app,CFile file)
         {
-            pEffect = app.file.readAString();
+            pEffect = file.readAString();
         }
     }
 }

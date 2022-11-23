@@ -18,9 +18,9 @@ namespace RuntimeXNA.Params
 		public Keys key;
         public short mouseKey;
 		
-		public override void  load(CRunApp app)
+		public override void  load(CRunApp app,CFile file)
 		{
-			short k = app.file.readAShort();
+			short k = file.readAShort();
 			key = CKeyConvert.getXnaKey(k);
             mouseKey = k;
 		}

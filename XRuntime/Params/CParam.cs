@@ -281,10 +281,10 @@ namespace RuntimeXNA.Params
             }
 
             param.code = c;
-            param.load(app);
+            param.load(app,file);
             file.seek((int)(debut + size));
             return param;
         }
-        public abstract void load(CRunApp app);
+        public abstract void load(CRunApp app,CFile file);
     }
 }

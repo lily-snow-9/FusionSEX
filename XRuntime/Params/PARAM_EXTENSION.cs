@@ -16,14 +16,14 @@ namespace RuntimeXNA.Params
 	{
 		public byte[] data = null;
 		
-		public override void  load(CRunApp app)
+		public override void  load(CRunApp app,CFile file)
 		{
-			short size = app.file.readAShort();
-			app.file.skipBytes(4); // type + code
+			short size = file.readAShort();
+			file.skipBytes(4); // type + code
 			if (size > 6)
 			{
 				data = new byte[size - 6];
-				app.file.read(data);
+				file.read(data);
 			}
 		}
 	}

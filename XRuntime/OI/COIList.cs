@@ -58,7 +58,6 @@ namespace RuntimeXNA.OI
                         // CHUNK_OBJINFONAME
                         case 0x4445:
                             ois[index].oiName = objFile.readAString();
-                            Console.WriteLine(ois[index].oiName);
                             break;
                         // CHUNK_OBJECTSCOMMON
                         case 0x4446:

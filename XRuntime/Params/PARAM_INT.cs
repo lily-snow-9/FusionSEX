@@ -17,9 +17,9 @@ namespace RuntimeXNA.Params
 		public int value_Renamed;
         public int value2;
 		
-		public override void  load(CRunApp app)
+		public override void  load(CRunApp app,CFile file)
 		{
-			value_Renamed = app.file.readAInt();
+			value_Renamed = file.readAInt();
             value2 = 0;
 		}
 	}

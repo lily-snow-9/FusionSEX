@@ -19,12 +19,12 @@ namespace RuntimeXNA.Params
 		public short x2;
 		public short y2;
 		
-		public override void  load(CRunApp app)
+		public override void  load(CRunApp app,CFile file)
 		{
-			x1 = app.file.readAShort();
-			y1 = app.file.readAShort();
-			x2 = app.file.readAShort();
-			y2 = app.file.readAShort();
+			x1 = file.readAShort();
+			y1 = file.readAShort();
+			x2 = file.readAShort();
+			y2 = file.readAShort();
 		}
 	}
 }

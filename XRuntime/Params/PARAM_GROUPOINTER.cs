@@ -17,10 +17,10 @@ namespace RuntimeXNA.Params
 		public short pointer;
 		public short id;
 		
-		public override void  load(CRunApp app)
+		public override void  load(CRunApp app,CFile file)
 		{
-			app.file.skipBytes(4);
-			id = app.file.readAShort();
+			file.skipBytes(4);
+			id = file.readAShort();
 		}
 	}
 }

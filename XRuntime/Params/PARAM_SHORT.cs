@@ -16,9 +16,9 @@ namespace RuntimeXNA.Params
 	{
 		public short value;
 		
-		public override void  load(CRunApp app)
+		public override void  load(CRunApp app,CFile file)
 		{
-			value = app.file.readAShort();
+			value = file.readAShort();
 		}
 	}
 }

@@ -60,13 +60,13 @@ namespace RuntimeXNA.Events
 			evg.evgNCond = (byte) file.readByte();
 			evg.evgNAct = (byte) file.readByte();
 			evg.evgFlags = (ushort)file.readAShort();
-			file.readAShort();
-			evg.evgInhibit = (ushort)file.readAInt();
-			evg.evgInhibitCpt = (short)file.readAInt();
-			//evg.evgInhibit = (ushort)file.readAShort();
-			//evg.evgInhibitCpt = (short)file.readAShort();
-			//evg.evgIdentifier = (ushort)file.readAShort();
-			//file.skipBytes(2); // evgUndo
+			//file.readAShort();
+			//evg.evgInhibit = (ushort)file.readAInt();
+			//evg.evgInhibitCpt = (short)file.readAInt();
+			evg.evgInhibit = (ushort)file.readAShort();
+			evg.evgInhibitCpt = (short)file.readAShort();
+			evg.evgIdentifier = (ushort)file.readAShort();
+			file.skipBytes(2); // evgUndo
 			
 			evg.evgEvents = new CEvent[evg.evgNCond + evg.evgNAct];
 			int n;

@@ -18,11 +18,11 @@ namespace RuntimeXNA.Params
 		public int loops;
 		public short comparaison;
 		
-		public override void  load(CRunApp app)
+		public override void  load(CRunApp app,CFile file)
 		{
-			timer = app.file.readAInt();
-			loops = app.file.readAInt();
-			comparaison = app.file.readAShort();
+			timer = file.readAInt();
+			loops = file.readAInt();
+			comparaison = file.readAShort();
 		}
 	}
 }

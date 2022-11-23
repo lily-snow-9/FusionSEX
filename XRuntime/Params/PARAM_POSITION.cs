@@ -14,18 +14,18 @@ namespace RuntimeXNA.Params
 {	
 	public class PARAM_POSITION:CPosition
 	{
-		public override void  load(CRunApp app)
+		public override void  load(CRunApp app,CFile file)
 		{
-			posOINUMParent = app.file.readAShort();
-			posFlags = app.file.readAShort();
-			posX = app.file.readAShort();
-			posY = app.file.readAShort();
-			posSlope = app.file.readAShort();
-			posAngle = app.file.readAShort();
-			posDir = app.file.readAInt();
-			posTypeParent = app.file.readAShort();
-			posOiList = app.file.readAShort();
-			posLayer = app.file.readAShort();
+			posOINUMParent = file.readAShort();
+			posFlags = file.readAShort();
+			posX = file.readAShort();
+			posY = file.readAShort();
+			posSlope = file.readAShort();
+			posAngle = file.readAShort();
+			posDir = file.readAInt();
+			posTypeParent = file.readAShort();
+			posOiList = file.readAShort();
+			posLayer = file.readAShort();
 		}
 	}
 }

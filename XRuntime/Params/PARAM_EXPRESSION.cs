@@ -14,10 +14,12 @@ namespace RuntimeXNA.Params
 {	
 	public class PARAM_EXPRESSION:CParamExpression
 	{
-		public override void  load(CRunApp app)
+		public override void  load(CRunApp app,CFile file)
 		{
-			comparaison = app.file.readAShort();
-			load(app.file);
+			comparaison = file.readAShort();
+			load(file);
 		}
+
+		
 	}
 }

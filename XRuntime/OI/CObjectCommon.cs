@@ -110,7 +110,6 @@ namespace RuntimeXNA.OI
 	        ocFlags2=file.readAShort();		    // WORD New news flags, before was ocEvents
 	        ocOEPrefs=file.readAShort();		    // WORD Automatically modifiable flags
 	        ocIdentifier=file.readAInt();		    // DWORD Identifier d'objet
-	        Console.WriteLine(ocIdentifier.ToString("X"));
 	        ocBackColor=file.readAColor();		    // COLORREF Background color
 	        int oFadeIn=file.readAInt();		    // oFadeIn DWORD Offset fade in 
 	        int oFadeOut=file.readAInt();		    // oFadeOut DWORD Offset fade out 

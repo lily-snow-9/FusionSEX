@@ -20,6 +20,6 @@ namespace RuntimeXNA.Params
 		public CCreate()
 		{
 		}
-		public abstract override void  load(CRunApp app);
+		public abstract override void  load(CRunApp app,CFile file);
 	}
 }
