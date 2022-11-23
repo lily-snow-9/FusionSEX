@@ -374,6 +374,7 @@ namespace RuntimeXNA.Application
                         frameFiles[frameMaxIndex] = chunkReader;
                         CChunk frChk = new CChunk();
                         var frReader = frChk.getFile();
+                        frameMaxIndex++;
                         break;
                         while (frChk.chID != 0x7F7F)		// CHUNK_LAST
                         {
@@ -398,7 +399,7 @@ namespace RuntimeXNA.Application
                             }
                             frReader.seek(frPosEnd);
                         }
-                        frameMaxIndex++;
+                        
                         break;
                     // CHUNK_EXTENSIONS2
                     case 0x2234:

@@ -9,7 +9,6 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Audio;
 using RuntimeXNA.Banks;
-using Microsoft.Xna.Framework.Media;
 
 namespace RuntimeXNA.Application
 {

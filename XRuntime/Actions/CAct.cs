@@ -761,6 +761,7 @@ namespace RuntimeXNA.Actions
                                 break;
 
                             default: 
+	                            System.Console.Out.WriteLine("*** Missing action!");
 								act = new CActExtension(); // EXTENSIONS
 								break;
 							
