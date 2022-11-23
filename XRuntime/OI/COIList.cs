@@ -27,16 +27,16 @@ namespace RuntimeXNA.OI
         {
             // Alloue la table de OI
             oiMaxIndex = (short)file.readAInt();
-            Console.WriteLine("Reading objects: "+oiMaxIndex);
 
             ois = new COI[oiMaxIndex];
-            CChunk chk = new CChunk();
+            
             // Explore les chunks
             int index;
             oiMaxHandle = 0;
             for (index = 0; index < oiMaxIndex; index++)
             {
                 int posEnd;
+                CChunk chk = new CChunk();
                 while (chk.chID != CChunk.CHUNK_LAST)
                 {
                     

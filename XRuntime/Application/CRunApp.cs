@@ -277,7 +277,6 @@ namespace RuntimeXNA.Application
             {
                 return false;
             }
-            Console.WriteLine("Fusion build: "+prdBuild);
 
             // Reserve les objets
             OIList = new COIList();
@@ -303,7 +302,6 @@ namespace RuntimeXNA.Application
                 posEnd = chunkStart + chk.chSize+8;
                 file.seek(posEnd);
                 var chunkReader = chk.getFile();
-                Console.WriteLine($"Reading root chunk: {chk.chID} - {chk.chFlags}");
                 switch (chk.chID)
                 {
                     // CHUNK_APPHEADER
@@ -449,7 +447,6 @@ namespace RuntimeXNA.Application
 
                 // Positionne a la fin du chunk
             }
-            Console.WriteLine("Finish initial reading");
 
             // Fixe le flags multiple samples
             soundPlayer.setMultipleSounds((gaFlags & GA_MIX) != 0);
@@ -1128,7 +1125,6 @@ namespace RuntimeXNA.Application
             gaCyWin = file.readAShort();		// Window y-size
             gaScoreInit = file.readAInt();		// Initial score
             gaLivesInit = file.readAInt();		// Initial number of lives
-            Console.WriteLine(gaMode);
             int n, m;
             for (n = 0; n < MAX_PLAYER; n++)
             {
@@ -1157,7 +1153,6 @@ namespace RuntimeXNA.Application
             gaBorderColour = file.readAColor();	// Border colour
             gaNbFrames = file.readAInt();		// Number of frames
             gaFrameRate = file.readAInt();		// Number of frames per second
-            Console.WriteLine(gaFrameRate);
             file.skipBytes(1);	// Index of Window menu for MDI applications
             file.skipBytes(3);
         }

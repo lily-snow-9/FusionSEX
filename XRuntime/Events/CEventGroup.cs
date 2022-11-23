@@ -59,7 +59,6 @@ namespace RuntimeXNA.Events
 			
 			evg.evgNCond = (byte) file.readByte();
 			evg.evgNAct = (byte) file.readByte();
-			Console.WriteLine($"Conditions: {evg.evgNCond}. Actions: {evg.evgNAct}");
 			evg.evgFlags = (ushort)file.readAShort();
 			file.readAShort();
 			evg.evgInhibit = (ushort)file.readAInt();

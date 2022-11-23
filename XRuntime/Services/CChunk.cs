@@ -99,7 +99,6 @@ namespace RuntimeXNA.Services
 	        chID=file.readAShort();
 	        chFlags=file.readAShort();
 	        chSize=file.readAInt();
-	        Console.WriteLine($"Reading any chunk: {chID} - {chFlags}");
 
 	        switch (chFlags)
 	        {

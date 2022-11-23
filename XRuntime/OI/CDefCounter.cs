@@ -24,6 +24,7 @@ namespace RuntimeXNA.OI
             ctInit=file.readAInt();
             ctMini=file.readAInt();
             ctMaxi=file.readAInt();
+            Console.WriteLine(ctMaxi);
         }
     }
 }

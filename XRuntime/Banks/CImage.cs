@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using CTFAK.Memory;
+using Ionic.Zlib;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -20,6 +21,16 @@ namespace RuntimeXNA.Banks
 {
     public class CImage
     {
+	    public BitDict Flags = new BitDict(new[]
+	    {
+		    "RLE",
+		    "RLEW",
+		    "RLET",
+		    "LZX",
+		    "Alpha",
+		    "ACE",
+		    "Mac"
+	    });
         public CRunApp app;
         public int handle;
         public short width;
@@ -50,23 +61,44 @@ namespace RuntimeXNA.Banks
 
             var imgData = Decompressor.Decompress(file, out _);
             var imgFile = new CFile(imgData);
+            imgFile.seek(0);
 
+	        imgFile.seek(0);
             var checksum = imgFile.readAInt();
             var references = imgFile.readAInt();
             var size = imgFile.readAInt();
-            width = imgFile.readShort();
-            height = imgFile.readShort();
-            imgFile.readShort();
+            width = imgFile.readAShort();
+            height = imgFile.readAShort();
+            var graphicMode = imgFile.readAByte();
+            Flags.flag=imgFile.readAByte();
+            imgFile.readAShort();
+            xSpot = imgFile.readAShort();
+            ySpot = imgFile.readAShort();
+            xAP = imgFile.readAShort();
+            yAP = imgFile.readAShort();
+            var trans = imgFile.readArray(4);
+            image = new Texture2D(app.graphicsDevice,width,height);
+            byte[] theData;
+            if (Flags["LZX"])
+            {
+	            var decompressed = imgFile.readAInt();
+	            theData = imgFile.readArray(imgFile.data.Length - imgFile.pointer);
+	            theData = ZlibStream.UncompressBuffer(theData);
+            }
+            else theData = imgFile.readArray(size);
 
 
+
+           
+            image.SetData(ImageHelper.TranslateImage(width,height,theData,trans),0,4*width*height);
+            
             mosaic = 0;
            
             
 
-            string imgName = handle.ToString("D4");
-            imgName = "Img" + imgName;
-            image = Texture2D.FromFile(app.graphicsDevice,
-	            @"D:\KostyasLair\kostyasparty2.png"); //app.content.Load<Texture2D>(imgName);
+            
+            //image = Texture2D.FromFile(app.graphicsDevice, @"D:\KostyasLair\kostyasparty2.png"); 
+            
         }
         public CMask getMask(int flags, int angle, float scaleX, float scaleY)
         {

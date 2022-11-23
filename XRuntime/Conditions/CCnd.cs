@@ -559,7 +559,6 @@ namespace RuntimeXNA.Conditions
 				cnd.evtNParams = (byte) file.readByte();
 				cnd.evtDefType = (byte) file.readByte();
 				cnd.evtIdentifier = file.readAShort();
-				Console.WriteLine($"Number of params: {cnd.evtNParams}");
 				// Lis les parametres
 				if (cnd.evtNParams > 0)
 				{

@@ -94,15 +94,17 @@ namespace RuntimeXNA.OI
 	        int oAnimations=file.readAShort();	    // WORD Offset of the animations
 
 	        file.skipBytes(2);			    // WORD For version versions > MOULI 
-	        file.skipBytes(2);			    // WORD For version versions > MOULI 
-	        int oExtension=file.readAShort();	    // WORD Extension structure 
 	        int oCounter=file.readAShort();             // WORD Pointer to COUNTER structure
-	        ocOEFlags=file.readAInt();		    // New flags
-	        for (n=0; n<8; n++)
-		        ocQualifiers[n]=file.readAShort();	    // OC_MAX_QUALIFIERS Qualifier list
 	        int oData=file.readAShort();		    // WORD Pointer to DATA structure
 
-	        
+	        file.skipBytes(2);
+	        ocOEFlags=file.readAInt();		    // New flags
+
+	        for (n=0; n<8; n++)
+		        ocQualifiers[n]=file.readAShort();	    // OC_MAX_QUALIFIERS Qualifier list
+
+	        int oExtension=file.readAShort();	    // WORD Extension structure 
+
 	        int oValues=file.readAShort();		    // WORD Values structure
 	        int oStrings=file.readAShort();             // WORD String structure
 	        ocFlags2=file.readAShort();		    // WORD New news flags, before was ocEvents

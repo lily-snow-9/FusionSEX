@@ -71,7 +71,6 @@ namespace CTFAK.Memory
 
         public static byte[] DecodeMode3(byte[] chunkData, int chunkSize, int chunkId, out int decompressed)
         {
-            Console.WriteLine("Decoding mode3");
             CFile reader = new CFile(chunkData);
             int decompressedSize = reader.readAInt();
 

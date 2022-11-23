@@ -76,6 +76,7 @@ namespace RuntimeXNA.Objects
             CDefCounter cPtr = (CDefCounter)hoCommon.ocObject;
             rsMini = cPtr.ctMini;
             rsMaxi = cPtr.ctMaxi;
+            Console.WriteLine($"{rsMini} - {rsMaxi}");
             rsMiniDouble = (double)rsMini;
             rsMaxiDouble = (double)rsMaxi;
             rsValue = new CValue(cPtr.ctInit);

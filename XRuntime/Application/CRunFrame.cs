@@ -273,7 +273,7 @@ namespace RuntimeXNA.Application
             app.OIList.enumElements((IEnum) app.imageBank, (IEnum)app.fontBank);
             var pos = app.file.getFilePointer();
             app.file.seek(app.imageBank.realFileOffset);
-            app.imageBank.load();
+            //app.imageBank.load();
             app.file.seek(pos);
             app.fontBank.load();
             evtProg.enumSounds((IEnum) app.soundBank);

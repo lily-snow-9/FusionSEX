@@ -18,13 +18,13 @@ namespace RuntimeXNA.Banks
     {
         public CRunApp app;
         public CFile file;
-        public CImage[] images;
+        public Dictionary<int,CImage> images;
         public int nHandlesReel;
         public int nHandlesTotal;
         public int nImages;
         Dictionary<int,int> offsetsToImage;
-        short[] handleToIndex;
-        byte[] useCount;
+        Dictionary<int,short> handleToIndex;
+        Dictionary<int,int> useCount;
         CRect rcInfo=null;
         CPoint hsInfo=null;
         CPoint apInfo=null;
@@ -45,41 +45,37 @@ namespace RuntimeXNA.Banks
         public void preLoad()
         {
             // Nombre de handles
-            nHandlesReel = file.readAInt()-1;
+            nHandlesReel = file.readAInt();
             offsetsToImage = new Dictionary<int, int>();
-
-            var shit = file.readAInt();
-            Decompressor.Decompress(file, out _);
+            images = new Dictionary<int, CImage>();
+            
+            
             // Repere les positions des images
             int n;
             int offset;
-            CImage image = new CImage();
+            
             for (n = 0; n < nHandlesReel; n++)
             {
+                CImage image = new CImage();
                 offset = (int) file.getFilePointer();
                 image.load(app,app.file,false);
+                images.Add(image.handle,image);
                 offsetsToImage.Add(image.handle,offset);
             }
 
             // Reservation des tables
-            useCount = new byte[nHandlesReel];
-            resetToLoad();
+            useCount = new Dictionary<int, int>();
+            /*resetToLoad();
             handleToIndex = null;
             nHandlesTotal = nHandlesReel;
             nImages = 0;
-            images = null;
+            images = null;*/
         }
 
         public CImage getImageFromHandle(short handle)
         {
-            if (handle >= 0 && handle < nHandlesTotal)
-            {
-                if (handleToIndex[handle] != -1)
-                {
-                    return images[handleToIndex[handle]];
-                }
-            }
-            return null;
+            return images[handle];
+        
         }
 
         public CImage getImageFromIndex(short index)
@@ -93,16 +89,16 @@ namespace RuntimeXNA.Banks
 
         public void resetToLoad()
         {
-            int n;
-            for (n = 0; n < nHandlesReel; n++)
-            {
-                useCount[n] = 0;
-            }
+            useCount.Clear();
         }
 
         public void setToLoad(short handle)
         {
-            useCount[handle]++;
+            if (useCount.ContainsKey(handle))
+            {
+                useCount[handle]++;
+            }
+            else useCount.Add(handle,1);
         }
 
         // Entree enumeration
@@ -132,6 +128,7 @@ namespace RuntimeXNA.Banks
     
         public void load()
         {
+            return;
             int n;
 
             // Reset mosaics
@@ -152,26 +149,24 @@ namespace RuntimeXNA.Banks
 
             // Combien d'images?
             nImages = 0;
-            for (n = 0; n < nHandlesReel; n++)
+            foreach (var pair in useCount)
             {
-                if (useCount[n] != 0)
-                {
-                    nImages++;
-                }
+                if (pair.Value != 0) nImages++;
             }
+            
 
             // Charge les images
-            CImage[] newImages = new CImage[nImages];
+            var newImages = new Dictionary<int, CImage>();
             int count = 0;
-            int h;
-            for (h = 0; h < nHandlesReel; h++)
+            int h=0;
+            foreach (var pair in useCount)
             {
-                if (useCount[h] != 0)
+                if (pair.Value!=0)
                 {
-                    if (images != null && handleToIndex[h] != -1 && images[handleToIndex[h]] != null)
+                    if (images != null && handleToIndex[pair.Key] != -1 && images[handleToIndex[pair.Key]] != null)
                     {
-                        newImages[count] = images[handleToIndex[h]];
-                        newImages[count].useCount = useCount[h];
+                        newImages[count] = images[handleToIndex[pair.Key]];
+                        newImages[count].useCount = (short)pair.Value;
                         if (mosaics != null && oldMosaics != null)
                         {
                             var handle = newImages[count].mosaic;
@@ -182,24 +177,28 @@ namespace RuntimeXNA.Banks
                     else
                     {
                         newImages[count] = new CImage();
-                        file.seek(offsetsToImage[h]);
+                        file.seek(offsetsToImage[pair.Key]);
                         newImages[count].load(app,app.file,true);
-                        newImages[count].useCount = useCount[h];
+                        newImages[count].useCount = (short)pair.Value;
                     }
                     count++;
                 }
+
+                h++;
             }
             images = newImages;
 
             // Cree la table d'indirection
-            handleToIndex = new short[nHandlesReel];
-            for (n = 0; n < nHandlesReel; n++)
+            handleToIndex = new Dictionary<int, short>();
+            foreach (var pair in images)
             {
-                handleToIndex[n] = -1;
+                handleToIndex[pair.Key] = -1;
             }
-            for (n = 0; n < nImages; n++)
+
+            foreach (var pair in images)
             {
-                handleToIndex[images[n].handle] = (short) n;
+            
+                handleToIndex[pair.Key] = (short) pair.Key;
             }
             nHandlesTotal = nHandlesReel;
 
@@ -421,6 +420,7 @@ namespace RuntimeXNA.Banks
 
         public short addImage(Texture2D img, short xSpot, short ySpot, short xAP, short yAP, short count)
         {
+            /*
             int h;
 
             // Cherche un handle libre
@@ -466,7 +466,7 @@ namespace RuntimeXNA.Banks
             // Rajouter une image?
             if (iFound == -1)
             {
-                CImage[] newImages = new CImage[nImages + 10];
+                var newImages = new Dictionary<int, CImage>();
                 for (i = 0; i < nImages; i++)
                 {
                     newImages[i] = images[i];
@@ -493,7 +493,8 @@ namespace RuntimeXNA.Banks
             images[iFound].width = (short) img.Width;
             images[iFound].height = (short) img.Height;
 
-            return hFound;
+            return hFound;*/
+            return 0;
         }
         // Detruit une image si plus d'utilisation
         public void delImage(short handle)
@@ -544,7 +545,7 @@ namespace RuntimeXNA.Banks
                             // Rajouter une image?
                             if (iFound == -1)
                             {
-                                CImage[] newImages = new CImage[nImages + 10];
+                                var newImages = new Dictionary<int, CImage>();
                                 for (i = 0; i < nImages; i++)
                                 {
                                     newImages[i] = images[i];
