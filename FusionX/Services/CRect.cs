@@ -4,6 +4,9 @@
 //
 //----------------------------------------------------------------------------------
 
+using System;
+using FusionX.Extensions;
+
 namespace FusionX.Services
 {
     public class CRect
@@ -12,6 +15,15 @@ namespace FusionX.Services
         public int top = 0;
         public int right = 0;
         public int bottom = 0;
+
+        public CRect(){}
+        public CRect(int a, int b, int c, int d)
+        {
+	        left = a;
+	        top = b;
+	        right = c;
+	        bottom = d;
+        }
 
         public void load(CFile file)
         {

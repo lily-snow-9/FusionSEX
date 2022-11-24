@@ -300,7 +300,6 @@ namespace FusionX.Application
                 posEnd = chunkStart + chk.chSize+8;
                 file.seek(posEnd);
                 var chunkReader = chk.getFile();
-                Console.WriteLine(chk.chID);
                 switch (chk.chID)
                 {
                     // CHUNK_APPHEADER
@@ -372,7 +371,6 @@ namespace FusionX.Application
                         // Repere les positions des frames dans le fichier
                         frameFiles[frameMaxIndex] = chunkReader;
                         frameMaxIndex++;
-                        Console.WriteLine("Preloading Frame");
                         break;
                     // CHUNK_EXTENSIONS2
                     case 0x2234:

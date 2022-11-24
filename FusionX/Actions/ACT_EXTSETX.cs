@@ -18,8 +18,10 @@ namespace FusionX.Actions
 			CObject pHo = rhPtr.rhEvtProg.get_ActionObjects(this);
 			if (pHo == null)
 				return ;
+			int x = 0;
 			
-			int x = rhPtr.get_EventExpressionInt((CParamExpression) evtParams[0]);
+			x = rhPtr.get_EventExpressionInt((CParamExpression) evtParams[0]);
+
 			CRun.setXPosition(pHo, x);
 		}
 	}

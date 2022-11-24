@@ -115,7 +115,6 @@ namespace FusionX.Application
         // Charge la frame
         public bool loadFullFrame(int index)
         {
-            Console.WriteLine("Loading frame");
             // Positionne le fichier
             frFile = app.frameFiles[index];
             frFile.seek(0);

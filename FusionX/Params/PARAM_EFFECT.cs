@@ -15,7 +15,9 @@ namespace FusionX.Params
 
         public override void load(CRunApp app,CFile file)
         {
+            file.bUnicode = false;
             pEffect = file.readAString();
+            file.bUnicode = true;
         }
     }
 }

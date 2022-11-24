@@ -5,6 +5,7 @@
 //----------------------------------------------------------------------------------
 
 using System;
+using System.Diagnostics;
 using FusionX.Animations;
 using FusionX.Application;
 using FusionX.Banks;
@@ -636,7 +637,7 @@ namespace FusionX.RunLoop
                 if (mouseKey>=0)
                 {
                     long delta=rhApp.timer-mouseKeyTime;
-                    if (delta<100)
+                    if (delta<200)
                     {
                         nClicks=2;
                         mouseKeyTime=0;
@@ -2956,9 +2957,11 @@ namespace FusionX.RunLoop
 
         }
 
+        private Stopwatch screenTimer= new Stopwatch();
         public void screen_Update()
         {	
-	        int background;
+            screenTimer.Start();
+            int background;
 	        if(rhApp.frame != null)
 		        background = rhApp.frame.leBackground;
 	        else
@@ -3047,6 +3050,19 @@ namespace FusionX.RunLoop
                     control.drawControl(rhApp.spriteBatch);
                 }
             }
+            
+            var elapsed = screenTimer.Elapsed.TotalMilliseconds;
+            screenTimer.Stop();
+            var frameRate = elapsed > 0 ? 1000 / elapsed : 0;
+            int currentY = 0;
+            CServices.drawText(rhApp.spriteBatch, $"FusionX Debug v0.1", 0, new CRect(0, currentY, 500, 200), 0xFF00FF, rhApp.fontBank.getFontFromHandle(0),0,0);
+            currentY += 15;
+            CServices.drawText(rhApp.spriteBatch, $"Current frame: {rhApp.frame.frameName}", 0, new CRect(0, currentY, 500, 200), 0xFF00FF, rhApp.fontBank.getFontFromHandle(0),0,0);
+            currentY += 15;
+
+            CServices.drawText(rhApp.spriteBatch, $"FPS: {((int)frameRate)}", 0, new CRect(0, currentY, 500, 200), 0xFF00FF, rhApp.fontBank.getFontFromHandle(0),0,0);
+            currentY += 15;
+            screenTimer.Reset();
 
 #if WINDOWS_PHONE
             if (joystick != null)

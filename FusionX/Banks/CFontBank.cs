@@ -61,6 +61,7 @@ namespace FusionX.Banks
 
         public CFont getFontFromHandle(short handle)
         {
+            return fonts[0];
             // Protection jeux niques
             if (handle == -1)
             {

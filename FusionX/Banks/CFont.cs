@@ -50,7 +50,6 @@ namespace FusionX.Banks
             var quality = dataReader.readAByte();
             var pitchAndFamily = dataReader.readAByte();
             lfFaceName = dataReader.readAString(32);
-            Console.WriteLine(lfFaceName);
         }
 
         public CFontInfo getFontInfo()

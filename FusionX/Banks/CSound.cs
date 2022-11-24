@@ -78,6 +78,7 @@ namespace FusionX.Banks
 
 		public void play(int nl, bool bPrio, float v, float p)
 		{
+            Console.WriteLine("Playing "+name);
             if (sound == null)
             {
                 return;
@@ -124,6 +125,7 @@ namespace FusionX.Banks
 
         public void stop()
         {
+            Console.WriteLine("Stopping "+name);
             if (type == 0)
             {
                 if (soundInstance != null)

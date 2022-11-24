@@ -40,7 +40,6 @@ namespace FusionX.Banks
 			    sounds.Add(sound.handle,sound);
 			}
 
-			Console.WriteLine("done loading sounds");
 			// Reservation des tables
 			//useCount=new int[nHandlesReel];
 

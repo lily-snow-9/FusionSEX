@@ -67,19 +67,19 @@ namespace FusionX.Application
         }
         public void play(short handle, int nLoops, int channel, bool bPrio)
         {
-            
 	        int n;
         	
 	        if (bOn == false)
 	        {
 		        return;
 	        }
-        	
+
 	        CSound sound = app.soundBank.getSoundFromHandle(handle);
 	        if (sound == null)
 	        {
 		        return;
 	        }
+
             if (bMultipleSounds == false)
             {
                 channel = 0;
@@ -96,7 +96,7 @@ namespace FusionX.Application
                     }
                 }
             }
-        	
+
 	        // Lance le son
 	        if (channel < 0)
 	        {
@@ -134,17 +134,21 @@ namespace FusionX.Application
 	        {
 		        return;
 	        }
+
 	        if (channels[channel] != null)
 	        {
-		        if (channels[channel].bUninterruptible == true)
-		        {
-			        return;
-		        }
+                if (channels[channel].handle != sound.handle)
+                    if (channels[channel].bUninterruptible == true)
+                        return;
+
+		        
                 if (channels[channel] != sound)
                 {
                     channels[channel].stop();
                 }
+                
             }
+
 	        channels[channel] = sound;
 	        sound.play(nLoops, bPrio, volumes[channel], pans[channel]);
         }
