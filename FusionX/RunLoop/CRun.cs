@@ -800,6 +800,7 @@ namespace FusionX.RunLoop
             return quit;
         }
 
+
         // Sortie de la boucle
         public int killRunLoop(int quit, bool bLeaveSamples)
         {
@@ -2960,7 +2961,6 @@ namespace FusionX.RunLoop
         private Stopwatch screenTimer= new Stopwatch();
         public void screen_Update()
         {	
-            screenTimer.Start();
             int background;
 	        if(rhApp.frame != null)
 		        background = rhApp.frame.leBackground;
@@ -3052,7 +3052,7 @@ namespace FusionX.RunLoop
             }
             
             var elapsed = screenTimer.Elapsed.TotalMilliseconds;
-            screenTimer.Stop();
+            
             var frameRate = elapsed > 0 ? 1000 / elapsed : 0;
             int currentY = 0;
             CServices.drawText(rhApp.spriteBatch, $"FusionX Debug v0.1", 0, new CRect(0, currentY, 500, 200), 0xFF00FF, rhApp.fontBank.getFontFromHandle(0),0,0);
@@ -5106,7 +5106,9 @@ namespace FusionX.RunLoop
             {
                 if (rhApp.parentApp == null)
                 {
+                    screenTimer.Start();
                     screen_Update();
+                    screenTimer.Stop();
                 }
             }
         }

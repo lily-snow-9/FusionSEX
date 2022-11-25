@@ -343,7 +343,7 @@ namespace FusionX.Objects
             switch (adCta.odDisplayType)
             {
                 case 4:	    // CTA_ANIM:
-                    hoAdRunHeader.rhApp.spriteGen.pasteSpriteEffect(batch, adCta.frames[Math.Max(rsOldFrame-1, 0)], hoRect.left, hoRect.top, 0, effect, effectParam);
+                    hoAdRunHeader.rhApp.spriteGen.pasteSpriteEffect(batch, adCta.frames[Math.Max((int)rsOldFrame, 0)], hoRect.left, hoRect.top, 0, effect, effectParam);
                     break;
 
                 case 2:	    // CTA_VBAR:

@@ -50,6 +50,7 @@ namespace FusionX.Banks
             var quality = dataReader.readAByte();
             var pitchAndFamily = dataReader.readAByte();
             lfFaceName = dataReader.readAString(32);
+            
         }
 
         public CFontInfo getFontInfo()
@@ -70,6 +71,7 @@ namespace FusionX.Banks
             font.lfWeight = info.lfWeight;
             font.lfItalic = info.lfItalic;
             font.lfFaceName = info.lfFaceName;
+            font.spriteFont = app.fontBank.fonts[0].spriteFont;
             return font;
         }
 
