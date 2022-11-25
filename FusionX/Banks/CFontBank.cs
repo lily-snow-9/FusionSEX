@@ -122,7 +122,7 @@ namespace FusionX.Banks
 
         public short enumerate(short num)
         {
-            setToLoad(num);
+            //setToLoad(num);
             return -1;
         }
 
