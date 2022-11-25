@@ -121,7 +121,7 @@ namespace FusionX.Sprites
             batch.Draw(texture, destinationRectangle, sourceRectangle, color);
         }
 
-        public void DrawString(SpriteFont font, String s, Vector2 v, Color c)
+        public void DrawString(DynamicSpriteFont font, String s, Vector2 v, Color c)
         {
             SetEffect(CSpriteGen.BOP_COPY);
             batch.DrawString(font, s, v, c);

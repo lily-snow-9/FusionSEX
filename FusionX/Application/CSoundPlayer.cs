@@ -142,7 +142,7 @@ namespace FusionX.Application
                         return;
 
 		        
-                if (channels[channel] != sound)
+                if (channels[channel].handle != sound.handle)
                 {
                     channels[channel].stop();
                 }

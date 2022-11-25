@@ -33,19 +33,16 @@ namespace FusionX.Extensions
         public CRunExtension loadRunObject()
         {
             CRunExtension pObject = null;
-            if (name == "kcini")
+            switch (name)
             {
-                pObject=new CRunkcini();
-                
-                
+                case "kcini":
+                    return new CRunkcini();
+                case "kcclock":
+                    return new CRunkcclock();
+                default:
+                    Console.WriteLine("Unimplemented extension: "+name);
+                    return null;
             }
-
-            if (pObject == null)
-            {
-                Console.WriteLine("Unimplemented extension: "+name);
-            }
-            return pObject;
         }
-
     }
 }
