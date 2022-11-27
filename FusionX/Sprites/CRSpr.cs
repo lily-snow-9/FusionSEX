@@ -4,6 +4,7 @@
 //
 //----------------------------------------------------------------------------------
 
+using System;
 using FusionX.Frame;
 using FusionX.Movements;
 using FusionX.Objects;
@@ -138,6 +139,7 @@ namespace FusionX.Sprites
         // -------------------------------------------------------------------
         public void handle()
         {
+
             CRun rhPtr = hoPtr.hoAdRunHeader;
 
             // En marche ou pas?

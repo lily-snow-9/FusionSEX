@@ -277,7 +277,7 @@ namespace FusionX.Application
             }
             
             //app.fontBank.load();
-            //evtProg.enumSounds((IEnum) app.soundBank);
+            evtProg.enumSounds((IEnum) app.soundBank);
             //app.soundBank.load();
 
             // Marque les OI de la frame

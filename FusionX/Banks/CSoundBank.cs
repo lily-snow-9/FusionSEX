@@ -88,7 +88,7 @@ namespace FusionX.Banks
 	    }	    
 	    public void setToLoad(short handle)
 	    {
-			useCount[handle]++;
+			sounds[handle].load();
 	    }
 
 	    public short enumerate(short num)

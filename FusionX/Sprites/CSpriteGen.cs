@@ -5,6 +5,8 @@
 //----------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using FusionX.Application;
 using FusionX.Banks;
 using FusionX.Objects;
@@ -1293,36 +1295,43 @@ namespace FusionX.Sprites
                 if ((ptSpr.sprFlags & CSprite.SF_OWNERDRAW) != 0 && ptSpr.sprRout != null)
 		        {
 			        ptSpr.sprRout.drawableDraw(batch, ptSpr, bank, ptSpr.sprX1+xOffset, ptSpr.sprY1+yOffset);
-		        }       		
-		        // Normal sprite
-		        else
-		        {
-                    CImage ptei = bank.getImageFromHandle(ptSpr.sprImg);
-                    if (ptei != null)
-                    {
-                        int hsx = 0;
-                        int hsy = 0;
-                        if ((ptSpr.sprFlags & CSprite.SF_NOHOTSPOT) == 0)
-                        {
-                            hsx = ptei.xSpot;
-                            hsy = ptei.ySpot;
-                        }
-                        tempRect.X = ptSpr.sprX + xOffset;
-                        tempRect.Y = ptSpr.sprY + yOffset;
-                        tempRect.Width = (int)(ptei.width*ptSpr.sprScaleX);
-                        tempRect.Height = (int)(ptei.height*ptSpr.sprScaleY);
-                        vector.X = hsx;
-                        vector.Y = hsy;
-                        Texture2D texture = ptei.Image;
-                        Nullable<Rectangle> sourceRect = null;
-                        if (ptei.mosaic != 0)
-                        {
-                            texture = app.imageBank.mosaics[ptei.mosaic];
-                            sourceRect = new Rectangle(0, 0, ptei.width, ptei.height);
-                        }
-                        batch.Draw(texture, tempRect, sourceRect, ptSpr.rgb, (float)((-ptSpr.sprAngle*Math.PI)/180), vector, ptSpr.sprEffect);
-                    }
 		        }
+                // Normal sprite
+                else
+                {
+
+	                CImage ptei = bank.getImageFromHandle(ptSpr.sprImg);
+	                if (ptei != null)
+	                {
+		                int hsx = 0;
+		                int hsy = 0;
+		                if ((ptSpr.sprFlags & CSprite.SF_NOHOTSPOT) == 0)
+		                {
+			                hsx = ptei.xSpot;
+			                hsy = ptei.ySpot;
+		                }
+
+		                tempRect.X = ptSpr.sprX + xOffset;
+		                tempRect.Y = ptSpr.sprY + yOffset;
+		                tempRect.Width = (int)(ptei.width * ptSpr.sprScaleX);
+		                tempRect.Height = (int)(ptei.height * ptSpr.sprScaleY);
+		                vector.X = hsx;
+		                vector.Y = hsy;
+		                Texture2D texture = ptei.Image;
+		                Nullable<Rectangle> sourceRect = null;
+		                if (ptei.mosaic != 0)
+		                {
+			                texture = app.imageBank.mosaics[ptei.mosaic];
+			                sourceRect = new Rectangle(0, 0, ptei.width, ptei.height);
+		                }
+
+		                batch.Draw(texture, tempRect, sourceRect, ptSpr.rgb,
+			                (float)((-ptSpr.sprAngle * Math.PI) / 180), vector, ptSpr.sprEffect);
+
+
+	                }
+                }
+
                 ptSpr.sprFlags &= ~(CSprite.SF_REAF | CSprite.SF_REAFINT);
 	        }
             if (bQuickDisplay)

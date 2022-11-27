@@ -85,8 +85,7 @@ namespace FusionX.Banks
             trans = imgFile.readAInt();
             
             theData = imgFile.readArray();
-
-            
+         
 
 
 

@@ -135,7 +135,7 @@ namespace FusionX
             {
                 Environment.Exit(-1);
             }
-            CFile cfile = new CFile(File.ReadAllBytes(file));//cca.data);
+            CFile cfile = new CFile(new FileStream(file,FileMode.Open));//cca.data);
             application = new CRunApp(this, cfile);
             if (application.load())
             {

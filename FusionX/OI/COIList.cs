@@ -177,6 +177,7 @@ namespace FusionX.OI
         }
         public void enumElements(IEnum enumImages, IEnum enumFonts)
         {
+            
 	        int h;
 	        for (h=0; h<oiMaxHandle; h++)
 	        {

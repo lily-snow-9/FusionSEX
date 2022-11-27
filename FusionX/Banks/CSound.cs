@@ -31,6 +31,7 @@ namespace FusionX.Banks
         public long timer;
         public int frequency;
         public CRunApp application;
+        public int fileOffset;
 
         public CSound(CRunApp app)
         {
@@ -39,7 +40,11 @@ namespace FusionX.Banks
 
         public void loadHandle()
         {
-            load();
+            fileOffset = application.file.getFilePointer();
+            handle = application.file.readAInt()-1;
+            application.file.skipBytes(6*4);
+            var size = application.file.readAInt();
+            application.file.skipBytes(size);
         }
 
         public static CSound createFromSound(CSound source)
@@ -54,6 +59,7 @@ namespace FusionX.Banks
         }
         public void load()
         {
+            application.file.seek(fileOffset);
             handle = application.file.readAInt()-1;
             var checksum = application.file.readAInt();
             var references = application.file.readAInt();
@@ -66,19 +72,12 @@ namespace FusionX.Banks
             decompressedData.bUnicode = application.file.bUnicode;
             name = decompressedData.readAString(nameLen);
             var actualSoundData = decompressedData.readArray((int)(decompressedData.reader.BaseStream.Length-decompressedData.reader.BaseStream.Position));
-            try
-            {
-                sound = SoundEffect.FromStream(new MemoryStream(actualSoundData));
+            sound = SoundEffect.FromStream(new MemoryStream(actualSoundData));
 
-            }
-            catch
-            {
-            }
         }
 
 		public void play(int nl, bool bPrio, float v, float p)
 		{
-            Console.WriteLine("Playing "+name);
             if (sound == null)
             {
                 return;

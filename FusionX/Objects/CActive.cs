@@ -4,6 +4,8 @@
 //
 //----------------------------------------------------------------------------------
 
+using System;
+
 namespace FusionX.Objects
 {
     class CActive : CObject
@@ -19,6 +21,7 @@ namespace FusionX.Objects
         }
         public override void modif()
         {
+
             ros.modifRoutine();
         }
     }

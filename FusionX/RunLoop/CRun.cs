@@ -3016,6 +3016,7 @@ namespace FusionX.RunLoop
         	
 	        rhApp.spriteGen.spriteUpdate();
 	        rhApp.spriteGen.spriteDraw(rhApp.spriteBatch);
+            
 //	        draw_QuickDisplay(rhApp.spriteBatch);
 	        rh3Scrolling=0;
 

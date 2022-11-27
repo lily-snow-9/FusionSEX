@@ -27,6 +27,11 @@ namespace FusionX.Services
         {
             reader = new BinaryReader(new MemoryStream(dt));
         }
+
+        public CFile(Stream stream)
+        {
+            reader = new BinaryReader(stream);
+        }
         public CFile(CFile source, int length)
         {
             /*data = new byte[length];
